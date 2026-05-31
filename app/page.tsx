@@ -14,6 +14,8 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
+        <img src="/favicon.png" alt="Logo" className={styles.logo} />
+        <h2>DScinema</h2>
         <h1>Вход в рулетку</h1>
         <p>Выбери, как войти в бурмалдянку</p>
       </div>

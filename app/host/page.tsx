@@ -7,6 +7,8 @@ import AddFilmModal from "../components/AddModal/addFilmModal";
 import { Film } from "../services/api";
 import { api } from "../services/api";
 import { Icon } from "@iconify/react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 function Main() {
   const [films, setFilms] = useState<Film[]>([]);
@@ -64,12 +66,32 @@ function Main() {
   return (
     <div className={styles.main}>
       <div className={styles.film_section}>
+        <Link href="/">
+          <div className={styles.logo_div}>
+            <img src="/favicon.png" alt="Logo" className={styles.logo} />
+            <h1>
+              <span className={styles.ds}>DS</span>
+              <span className={styles.dot}>•</span>
+              <span className={styles.cinema}>cinema</span>
+            </h1>
+          </div>
+        </Link>
         <div className={styles.film_section__header}>
           <div className={styles.left_side}>
             <h1>Список фильмов</h1>
             <p>{films.length}</p>
           </div>
           <button onClick={() => setisopenModal(true)}>Добавить фильм</button>
+          <button
+            className={styles.logout_btn}
+            onClick={() => {
+              localStorage.removeItem("me");
+              redirect("/");
+            }}
+          >
+            Выйти
+            <Icon icon="mdi:logout" />
+          </button>
           {isopenModal && (
             <AddFilmModal
               changeOpen={setisopenModal}

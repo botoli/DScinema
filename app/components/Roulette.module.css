@@ -168,8 +168,9 @@
 
 /* ---- Winner (flat highlight, no glow/scale/gradient) ---- */
 .winner {
-  border: 2px solid var(--accent);
+  width: 400px;
   background: var(--surface);
+  transition: all 0.3s ease-out;
 }
 
 .winner .filmCardOverlay {
