@@ -111,10 +111,10 @@ function Roulette({ films }: RouletteProps) {
         // Обновляем отображаемые фильмы
         setCurrentFilms([...remainingFilmsRef.current]);
         setCurrentHighlight(null);
-      }, 500);
+      }, 750);
 
       timeoutRefs.current.push(timeoutId);
-    }, 250);
+    }, 350);
   };
 
   // Остановка рулетки
