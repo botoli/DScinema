@@ -1,0 +1,132 @@
+{
+  "films": [
+    {
+      "title": "Криминальное чтиво",
+      "from": "Артем",
+      "year": 1994,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4716873/0a07a903-9025-4aff-bf7c-46bbb175888c/300x450",
+      "engName": "artem",
+      "id": "LRFbUGQMC8c",
+      "addedAt": "2026-05-31T18:31:00.374Z"
+    },
+    {
+      "title": "Начало",
+      "from": "Артем",
+      "year": 2010,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1629390/8ab9a119-dd74-44f0-baec-0629797483d7/300x450",
+      "engName": "artem",
+      "id": "C1MCJpYKRYQ",
+      "addedAt": "2026-05-31T18:31:00.375Z"
+    },
+    {
+      "title": "Молчание ягнят",
+      "from": "Артем",
+      "year": 1990,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/9c655ce1-2b59-4941-97aa-f9e928ed0ff4/300x450",
+      "engName": "artem",
+      "id": "ve7LigCgW8M",
+      "addedAt": "2026-05-31T18:31:00.375Z"
+    },
+    {
+      "title": "Матрица",
+      "from": "Миша",
+      "year": 1999,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/cf1970bc-3f08-4e0e-a095-2fb57c3aa7c6/300x450",
+      "engName": "misha",
+      "id": "3ziHhvvfDPw",
+      "addedAt": "2026-05-31T18:31:54.686Z"
+    },
+    {
+      "title": "Спасти рядового Райана",
+      "from": "Миша",
+      "year": 1998,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10703859/6bf087f7-a3eb-429f-8844-ace4db6be417/300x450",
+      "engName": "misha",
+      "id": "XTpIEh3_dU8",
+      "addedAt": "2026-05-31T18:31:54.687Z"
+    },
+    {
+      "title": "Властелин колец: Возвращение короля",
+      "from": "Миша",
+      "year": 2003,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/e410c71f-baa1-4fe5-bb29-aedb4662f49b/300x450",
+      "engName": "misha",
+      "id": "F-VpKGVgxTk",
+      "addedAt": "2026-05-31T18:31:54.688Z"
+    },
+    {
+      "title": "Крёстный отец",
+      "from": "Миша",
+      "year": 2022,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/eef7ee15-460c-424d-b5d3-9aaedf2423c0/300x450",
+      "engName": "misha",
+      "id": "OUtCL4SwcbA",
+      "addedAt": "2026-05-31T18:31:54.687Z"
+    },
+    {
+      "title": "Темный рыцарь",
+      "from": "Андрей",
+      "year": 2008,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/0fa5bf50-d5ad-446f-a599-b26d070c8b99/300x450",
+      "engName": "andrey",
+      "id": "KuozoTOk8zs",
+      "addedAt": "2026-05-31T18:32:48.194Z"
+    },
+    {
+      "title": "Унесённые призраками",
+      "from": "Андрей",
+      "year": 2001,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/ae3b699c-3db7-4196-a869-39b610bfe706/300x450",
+      "engName": "andrey",
+      "id": "J-BSdZLbuKU",
+      "addedAt": "2026-05-31T18:32:48.195Z"
+    },
+    {
+      "title": "Форрест Гамп",
+      "from": "Андрей",
+      "year": 1994,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/3560b757-9b95-45ec-af8c-623972370f9d/300x450",
+      "engName": "andrey",
+      "id": "lHAPqXSgIIY",
+      "addedAt": "2026-05-31T18:32:48.195Z"
+    },
+    {
+      "title": "Славные парни",
+      "from": "Андрей",
+      "year": 2016,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/5fb4b4c8-6d73-46dd-a4c8-e0bf953f8481/300x450",
+      "engName": "andrey",
+      "id": "I_MQwxA3OYw",
+      "addedAt": "2026-05-31T18:32:48.196Z"
+    },
+    {
+      "title": "Побег из Шоушенка",
+      "from": "Джебра",
+      "year": 1994,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/0b76b2a2-d1c7-4f04-a284-80ff7bb709a4/300x450",
+      "engName": "dzhebra",
+      "id": "_cyp6hdJDGc",
+      "addedAt": "2026-05-31T18:33:16.082Z"
+    },
+    {
+      "title": "Интерстеллар",
+      "from": "Джебра",
+      "year": 2014,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/430042eb-ee69-4818-aed0-a312400a26bf/300x450",
+      "engName": "dzhebra",
+      "id": "-WfRhMzaOSQ",
+      "addedAt": "2026-05-31T18:33:16.083Z"
+    },
+    {
+      "title": "Бойцовский клуб",
+      "from": "Джебра",
+      "year": 1999,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/16490236/495fb59a-bff1-4626-baba-bb392fede945/300x450",
+      "engName": "dzhebra",
+      "id": "Fl_7gtm-WJY",
+      "addedAt": "2026-05-31T18:33:16.083Z"
+    }
+  ],
+  "winners": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}

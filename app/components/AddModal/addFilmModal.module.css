@@ -1,0 +1,709 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.5);
+}
+
+.modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal__header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--foreground);
+}
+
+.closeIcon {
+  cursor: pointer;
+  color: var(--foreground-muted);
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.closeIcon:hover {
+  color: var(--foreground);
+}
+
+/* Тело модалки — две колонки: поиск слева, выбранные справа */
+.modal__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.searchSection {
+  flex: 1;
+  min-width: 0;
+  padding: 20px 24px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-light);
+}
+
+.searchInputWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.searchInput {
+  flex: 1;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  color: var(--foreground);
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.searchInput::placeholder {
+  color: var(--foreground-muted);
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.searchButton:hover:not(:disabled) {
+  background: var(--accent-muted);
+  transform: translateY(-1px);
+}
+
+.searchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--danger-bg);
+  border-radius: var(--radius);
+}
+
+.searchResults {
+  margin-top: 20px;
+}
+
+.searchResults h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground-muted);
+  margin-bottom: 12px;
+}
+
+.resultsList {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+}
+
+.resultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+
+.resultItem:hover {
+  background: rgba(242, 193, 78, 0.08);
+}
+
+.resultItem:last-child {
+  border-bottom: none;
+}
+
+.resultInfo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.resultTitle {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.resultYear {
+  color: var(--foreground-muted);
+  font-size: 12px;
+}
+
+.resultRating {
+  color: var(--accent);
+  font-size: 12px;
+  background: rgba(242, 193, 78, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.addButton {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--bg);
+}
+
+.addButton:hover:not(:disabled) {
+  background: var(--accent-muted);
+  transform: scale(1.05);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selectedSection {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.selectedSectionPlaceholder {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  font-size: 13px;
+  border-left: 1px solid var(--border-light);
+}
+
+.selectedSection h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground-muted);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.selectedList {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.selectedItem:last-child {
+  border-bottom: none;
+}
+
+.selectedTitle {
+  flex: 1;
+  font-size: 14px;
+}
+
+.selectedYear {
+  color: var(--foreground-muted);
+  font-size: 12px;
+}
+
+.removeButton {
+  background: var(--danger-bg);
+  border: none;
+  border-radius: var(--radius);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--danger);
+}
+
+.removeButton:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.modal__footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelButton {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 20px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: var(--border-light);
+}
+
+.addFilmsButton {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 20px;
+  color: var(--bg);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addFilmsButton:hover:not(:disabled) {
+  background: var(--accent-muted);
+  transform: translateY(-1px);
+}
+
+.addFilmsButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Стили скроллбара */
+.resultsList::-webkit-scrollbar,
+.selectedList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.resultsList::-webkit-scrollbar-track,
+.selectedList::-webkit-scrollbar-track {
+  background: var(--border-light);
+}
+
+.resultsList::-webkit-scrollbar-thumb,
+.selectedList::-webkit-scrollbar-thumb {
+  background: var(--accent-muted);
+  border-radius: 3px;
+}
+/* Добавьте эти стили к существующим */
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+
+.posterContainer {
+  flex-shrink: 0;
+  width: 50px;
+  height: 70px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noPoster {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-raised);
+  color: var(--foreground-muted);
+}
+
+.resultInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultTitle {
+  font-weight: 500;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultDetails {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.resultYear {
+  color: var(--foreground-muted);
+  font-size: 12px;
+}
+
+.resultRating {
+  color: var(--accent);
+  font-size: 12px;
+  background: rgba(242, 193, 78, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.resultCountry {
+  color: var(--foreground-muted);
+  font-size: 11px;
+  background: var(--surface-raised);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.addButton {
+  flex-shrink: 0;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--bg);
+}
+
+.addButton:hover:not(:disabled) {
+  background: var(--accent-muted);
+  transform: scale(1.05);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Стили для выбранных фильмов с постерами */
+.selectedItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.selectedPosterContainer {
+  flex-shrink: 0;
+  width: 36px;
+  height: 50px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+}
+
+.selectedPoster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.selectedNoPoster {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-raised);
+  color: var(--foreground-muted);
+}
+
+.selectedInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selectedTitle {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.selectedYear {
+  color: var(--foreground-muted);
+  font-size: 12px;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  background: var(--danger-bg);
+  border: none;
+  border-radius: var(--radius);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--danger);
+}
+
+.removeButton:hover {
+  background: var(--danger);
+  color: white;
+}
+/* Блок выбора пользователя */
+.userSelection {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--surface-raised);
+}
+
+.userSelection h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground-muted);
+  margin-bottom: 12px;
+}
+
+.userCheckboxes {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.userLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.userLabel:hover {
+  border-color: var(--accent);
+  background: rgba(242, 193, 78, 0.08);
+}
+
+.userRadio {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.userEmoji {
+  font-size: 18px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+/* Если выбран активный пользователь */
+.userLabel:has(input:checked) {
+  border-color: var(--accent);
+  background: rgba(242, 193, 78, 0.12);
+}
+
+.userLabel:has(input:checked) .userName {
+  color: var(--accent);
+}
+/* Стили для статуса поиска */
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  color: var(--foreground);
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.searchInput::placeholder {
+  color: var(--foreground-muted);
+}
+
+.searchStatus {
+  min-height: 24px;
+}
+
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.loadingIndicator svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.noResults {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--foreground-muted);
+  font-size: 12px;
+}
+
+/* Остальные стили остаются без изменений */
+.userSelection {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--surface-raised);
+}
+
+.userSelection h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground-muted);
+  margin-bottom: 12px;
+}
+
+.userCheckboxes {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.userLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.userLabel:hover {
+  border-color: var(--accent);
+  background: rgba(242, 193, 78, 0.08);
+}
+
+.userRadio {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.userLabel:has(input:checked) {
+  border-color: var(--accent);
+  background: rgba(242, 193, 78, 0.12);
+}
+
+.userLabel:has(input:checked) .userName {
+  color: var(--accent);
+}
+
+/* Остальные стили из предыдущей версии... */

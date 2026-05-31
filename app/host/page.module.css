@@ -1,0 +1,158 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  padding: 48px 32px;
+  min-height: 100vh;
+  color: var(--foreground);
+  align-items: start;
+}
+
+/* ---- Секция списка фильмов ---- */
+.film_section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.film_section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.left_side {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.left_side h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.left_side p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground-muted);
+}
+
+.left_side p::before {
+  content: "· ";
+}
+
+.film_section__header > button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foreground);
+  padding: 8px 22px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.film_section__header > button:hover {
+  background: var(--surface-raised);
+  border-color: var(--foreground-muted);
+}
+
+.film_section__header > button:active {
+  background: var(--surface);
+}
+
+.film_section__main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Группа фильмов от одного человека */
+.from_cards h1 {
+  margin: 0 0 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+.from_cards > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.95rem;
+  color: var(--foreground);
+}
+
+.from_cards > div:last-child {
+  border-bottom: none;
+}
+
+.deleteFilm {
+  background: none;
+  border: none;
+  color: var(--foreground-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  opacity: 0.45;
+}
+
+.deleteFilm:hover {
+  opacity: 1;
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* ---- Секция рулетки ---- */
+.roulette_section {
+  position: sticky;
+  top: 48px;
+}
+
+.roulette_section__header h1 {
+  margin: 0 0 28px;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+    padding: 32px 20px;
+    gap: 48px;
+  }
+
+  .roulette_section {
+    position: static;
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+  }
+
+  .film_section__header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .left_side h1 {
+    font-size: 1.5rem;
+  }
+
+  .roulette_section__header h1 {
+    font-size: 1.5rem;
+  }
+}
