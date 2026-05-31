@@ -127,6 +127,20 @@
       "addedAt": "2026-05-31T18:33:16.083Z"
     }
   ],
-  "winners": [],
+  "winners": [
+    {
+      "film": {
+        "title": "Властелин колец: Возвращение короля",
+        "from": "Миша",
+        "year": 2003,
+        "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/e410c71f-baa1-4fe5-bb29-aedb4662f49b/300x450",
+        "engName": "misha",
+        "id": "F-VpKGVgxTk",
+        "addedAt": "2026-05-31T18:31:54.688Z"
+      },
+      "wonAt": "2026-05-31T19:34:37.362Z",
+      "id": "D9U4Vu9zrXo"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
