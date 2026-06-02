@@ -180,7 +180,7 @@ function Roulette({ films }: RouletteProps) {
               }
               width="20"
             />
-            <p>{isRunning ? "Стоп" : "Старт"}</p>
+            <span>{isRunning ? "Стоп" : "Старт"}</span>
           </div>
         </button>
         <button
@@ -190,7 +190,7 @@ function Roulette({ films }: RouletteProps) {
         >
           <div className={styles.btn_start}>
             <Icon icon="material-symbols:restart-alt" width="20" />
-            <p>Перезапустить</p>
+            <span>Перезапустить</span>
           </div>
         </button>
       </div>

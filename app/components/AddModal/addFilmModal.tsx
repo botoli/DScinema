@@ -42,7 +42,7 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
 
   const users = [
     { id: "dzhebra", name: "Джебра" },
-    { id: "artem", name: "Артем" },
+    { id: "artem", name: "Артём" },
     { id: "andrey", name: "Андрей" },
     { id: "misha", name: "Миша" },
   ];
@@ -321,22 +321,38 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
         </div>
 
         <div className={styles.modal__footer}>
-          <button
-            onClick={() => changeOpen(false)}
-            className={styles.cancelButton}
-          >
-            Отмена
-          </button>
-          <button
-            onClick={handleAddFilms}
-            disabled={
-              selectedFilms.length === 0 ||
-              (!selectedUser && !pathname.startsWith("/member/"))
-            }
-            className={styles.addFilmsButton}
-          >
-            Добавить {selectedFilms.length > 0 && `(${selectedFilms.length})`}
-          </button>
+          <div className={styles.footerHints}>
+            {!pathname.startsWith("/member/") && !selectedUser && (
+              <span className={styles.hintItem}>
+                <Icon icon="mdi:alert-circle-outline" width="14" />
+                Выберите, кто добавляет
+              </span>
+            )}
+            {selectedFilms.length === 0 && (
+              <span className={styles.hintItem}>
+                <Icon icon="mdi:alert-circle-outline" width="14" />
+                Добавьте хотя бы один фильм
+              </span>
+            )}
+          </div>
+          <div className={styles.footerActions}>
+            <button
+              onClick={() => changeOpen(false)}
+              className={styles.cancelButton}
+            >
+              Отмена
+            </button>
+            <button
+              onClick={handleAddFilms}
+              disabled={
+                selectedFilms.length === 0 ||
+                (!selectedUser && !pathname.startsWith("/member/"))
+              }
+              className={styles.addFilmsButton}
+            >
+              Добавить {selectedFilms.length > 0 && `(${selectedFilms.length})`}
+            </button>
+          </div>
         </div>
       </div>
     </div>

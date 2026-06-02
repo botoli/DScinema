@@ -4,7 +4,7 @@ import styles from "./ChooseProfile.module.css";
 export default function ChooseProfile() {
   const users = [
     { id: "dzhebra", name: "Джебра" },
-    { id: "artem", name: "Артем" },
+    { id: "artem", name: "Артём" },
     { id: "andrey", name: "Андрей" },
     { id: "misha", name: "Миша" },
   ];

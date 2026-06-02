@@ -15,10 +15,11 @@
   border-radius: var(--radius);
   background: transparent;
   color: var(--foreground);
-  padding: 10px 26px;
+  padding: 4px 20px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
+  line-height: 1;
 }
 
 .rouletteButton:hover:not(:disabled) {
@@ -36,10 +37,11 @@
   border-radius: var(--radius);
   background: transparent;
   color: var(--foreground-muted);
-  padding: 10px 26px;
+  padding: 4px 20px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
+  line-height: 1;
 }
 
 .rouletteButtonSecondary:hover:not(:disabled) {
@@ -58,6 +60,12 @@
   color: var(--foreground-muted);
   padding: 32px;
   font-size: 1rem;
+}
+
+.btn_start {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ---- Grid ---- */

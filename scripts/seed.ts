@@ -52,6 +52,28 @@ async function main() {
     console.log("⚠️ Победители не найдены в db.json");
   }
 
+  // Patch notes по умолчанию
+  const defaultPatchNotes = [
+    {
+      version: "v1.1",
+      description: "Подсказки, если забыли выбрать себя или фильм",
+      date: "2026-06-02",
+    },
+    {
+      version: "v1.0",
+      description: "Запуск модалки добавления фильмов",
+      date: "2026-06-01",
+    },
+  ];
+
+  const existingNotes = await kv.get("patchNotes");
+  if (!existingNotes) {
+    await kv.set("patchNotes", defaultPatchNotes);
+    console.log("✅ Загружены patch notes по умолчанию");
+  } else {
+    console.log("ℹ️ Patch notes уже существуют, пропускаем");
+  }
+
   console.log("✅ Данные успешно перенесены в Redis!");
 }
 

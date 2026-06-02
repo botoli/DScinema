@@ -17,6 +17,12 @@ export interface Winner {
   wonAt: string;
 }
 
+export interface PatchNote {
+  version: string;
+  description: string;
+  date: string;
+}
+
 export const api = {
   // Получить все фильмы
   async getFilms(): Promise<Film[]> {
@@ -127,6 +133,14 @@ export const api = {
       }),
     });
     if (!response.ok) throw new Error("Failed to add winner");
+    return response.json();
+  },
+
+  // ===== Patch notes =====
+
+  async getPatchNotes(): Promise<PatchNote[]> {
+    const response = await fetch(`${API_URL}/patch-notes`);
+    if (!response.ok) throw new Error("Failed to fetch patch notes");
     return response.json();
   },
 };
