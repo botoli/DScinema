@@ -6,6 +6,8 @@
   min-height: 100vh;
   color: var(--foreground);
   align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 /* ---- Секция списка фильмов ---- */
@@ -54,7 +56,7 @@
   font-size: 2rem;
 }
 
-.left_side h1 {
+.left_side h2 {
   margin: 0;
   font-size: 2rem;
   font-weight: 800;
@@ -103,7 +105,7 @@
 }
 
 /* Группа фильмов от одного человека */
-.from_cards h1 {
+.from_cards h3 {
   margin: 0 0 14px;
   font-size: 1.15rem;
   font-weight: 700;
@@ -111,7 +113,7 @@
   letter-spacing: 0.01em;
 }
 
-.from_cards > div {
+.filmRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -121,8 +123,51 @@
   color: var(--foreground);
 }
 
-.from_cards > div:last-child {
+.filmRow:last-child {
   border-bottom: none;
+}
+
+.filmRowInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.filmRowPoster {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.filmRowNoPoster {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  flex-shrink: 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  color: var(--foreground-muted);
+  text-align: center;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .deleteFilm {
@@ -141,6 +186,13 @@
   opacity: 1;
   color: var(--danger);
   background: var(--danger-bg);
+}
+
+.queueHeader {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 /* ---- Секция рулетки ---- */
@@ -176,7 +228,7 @@
     align-items: flex-start;
   }
 
-  .left_side h1 {
+  .left_side h2 {
     font-size: 1.5rem;
   }
 

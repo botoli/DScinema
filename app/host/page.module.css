@@ -6,6 +6,8 @@
   min-height: 100vh;
   color: var(--foreground);
   align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 /* ---- Секция списка фильмов ---- */
@@ -21,20 +23,47 @@
   align-items: center;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.left_side h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.header_actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header_actions button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foreground);
+  padding: 8px 22px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.header_actions button:hover {
+  background: var(--surface-raised);
+  border-color: var(--foreground-muted);
 }
 
 .left_side {
   display: flex;
   align-items: baseline;
   gap: 14px;
-}
-
-.left_side h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
 }
 
 .left_side p {
@@ -48,26 +77,6 @@
   content: "· ";
 }
 
-.film_section__header > button {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--foreground);
-  padding: 8px 22px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.film_section__header > button:hover {
-  background: var(--surface-raised);
-  border-color: var(--foreground-muted);
-}
-
-.film_section__header > button:active {
-  background: var(--surface);
-}
-
 .film_section__main {
   display: flex;
   flex-direction: column;
@@ -75,7 +84,7 @@
 }
 
 /* Группа фильмов от одного человека */
-.from_cards h1 {
+.from_cards h3 {
   margin: 0 0 14px;
   font-size: 1.15rem;
   font-weight: 700;
@@ -83,7 +92,7 @@
   letter-spacing: 0.01em;
 }
 
-.from_cards > div {
+.filmRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -93,8 +102,51 @@
   color: var(--foreground);
 }
 
-.from_cards > div:last-child {
+.filmRow:last-child {
   border-bottom: none;
+}
+
+.filmRowInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.filmRowPoster {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.filmRowNoPoster {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  flex-shrink: 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  color: var(--foreground-muted);
+  text-align: center;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .deleteFilm {
@@ -112,6 +164,11 @@
   display: flex;
   align-items: center;
   gap: 14px;
+}
+.ds {
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 2rem;
 }
 .dot {
   color: var(--accent-muted);
@@ -167,7 +224,7 @@
     align-items: flex-start;
   }
 
-  .left_side h1 {
+  .left_side h2 {
     font-size: 1.5rem;
   }
 

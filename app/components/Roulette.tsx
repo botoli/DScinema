@@ -12,6 +12,7 @@ interface RouletteProps {
 function Roulette({ films }: RouletteProps) {
   const [currentFilms, setCurrentFilms] = useState<Film[]>([]);
   const [currentHighlight, setCurrentHighlight] = useState<string | null>(null);
+  const [eliminatingId, setEliminatingId] = useState<string | null>(null);
   const [winner, setWinner] = useState<Film | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -20,22 +21,61 @@ function Roulette({ films }: RouletteProps) {
   const isRunningRef = useRef(false);
   const remainingFilmsRef = useRef<Film[]>([]);
 
-  // Инициализация рулетки
+  // --- Вспомогательные функции ---
+
+  /** Синхронизирует состояние и ref isRunning */
+  const setRunning = (value: boolean) => {
+    setIsRunning(value);
+    isRunningRef.current = value;
+  };
+
+  /** Останавливает все активные таймеры */
+  const clearAllTimers = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    timeoutRefs.current.forEach(clearTimeout);
+    timeoutRefs.current = [];
+  };
+
+  /** Сбрасывает состояние рулетки к переданному списку фильмов */
+  const resetState = (filmList: Film[]) => {
+    setCurrentFilms([...filmList]);
+    setCurrentHighlight(null);
+    setEliminatingId(null);
+    setWinner(null);
+    setRunning(false);
+    remainingFilmsRef.current = [...filmList];
+  };
+
+  /** Собирает className для карточки фильма */
+  const filmCardClassName = (film: Film): string => {
+    const classes = [styles.filmCard];
+    if (currentHighlight === film.id) classes.push(styles.highlighted);
+    if (eliminatingId === film.id) classes.push(styles.eliminating);
+    if (winner?.id === film.id) classes.push(styles.winner);
+    return classes.join(" ");
+  };
+
+  // --- Эффекты ---
+
+  // Инициализация при изменении списка фильмов
   useEffect(() => {
     if (!films || films.length === 0) {
       setCurrentFilms([]);
       return;
     }
-
-    setCurrentFilms([...films]);
-    setCurrentHighlight(null);
-    setWinner(null);
-    setIsRunning(false);
-    isRunningRef.current = false;
-    remainingFilmsRef.current = [...films];
+    resetState(films);
   }, [films]);
 
-  // Сохраняем победителя в json-server
+  // Очистка при размонтировании
+  useEffect(() => {
+    return clearAllTimers;
+  }, []);
+
+  // --- API ---
+
   const saveWinner = async (winnerFilm: Film) => {
     try {
       await api.addWinner(winnerFilm);
@@ -45,7 +85,15 @@ function Roulette({ films }: RouletteProps) {
     }
   };
 
-  // Запуск рулетки
+  // --- Логика рулетки ---
+
+  const stopRoulette = () => {
+    clearAllTimers();
+    setRunning(false);
+    setCurrentHighlight(null);
+    setEliminatingId(null);
+  };
+
   const startRoulette = () => {
     const currentFilmsState = currentFilms.length > 0 ? currentFilms : films;
 
@@ -53,42 +101,24 @@ function Roulette({ films }: RouletteProps) {
       return;
     }
 
-    // Очищаем предыдущие таймеры
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    timeoutRefs.current.forEach(clearTimeout);
-    timeoutRefs.current = [];
+    clearAllTimers();
 
-    // Сбрасываем состояние
-    setWinner(null);
-    setCurrentHighlight(null);
-    setIsRunning(true);
-    isRunningRef.current = true;
-
-    // Копируем массив фильмов для работы
+    setRunning(true);
     remainingFilmsRef.current = [...currentFilmsState];
 
     intervalRef.current = setInterval(() => {
       const remaining = remainingFilmsRef.current;
 
-      // Если остался один фильм - объявляем победителя
+      // Если остался один фильм — объявляем победителя
       if (remaining.length <= 1) {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
+        stopRoulette();
 
         const winnerFilm = remaining[0];
         if (winnerFilm) {
           setWinner(winnerFilm);
-          setCurrentFilms([winnerFilm]); // Оставляем только победителя
-          // Сохраняем победителя в json-server
+          setCurrentFilms([winnerFilm]);
           saveWinner(winnerFilm);
         }
-        setCurrentHighlight(null);
-        setIsRunning(false);
-        isRunningRef.current = false;
         return;
       }
 
@@ -98,63 +128,30 @@ function Roulette({ films }: RouletteProps) {
 
       if (!eliminatedFilm) return;
 
-      // Подсвечиваем фильм
       setCurrentHighlight(eliminatedFilm.id);
+      setEliminatingId(eliminatedFilm.id);
 
-      // Удаляем фильм через задержку
       const timeoutId = setTimeout(() => {
-        // Удаляем из оставшихся
         remainingFilmsRef.current = remainingFilmsRef.current.filter(
           (f) => f.id !== eliminatedFilm.id,
         );
-
-        // Обновляем отображаемые фильмы
         setCurrentFilms([...remainingFilmsRef.current]);
         setCurrentHighlight(null);
+        setEliminatingId(null);
       }, 350);
 
       timeoutRefs.current.push(timeoutId);
     }, 700);
   };
 
-  // Остановка рулетки
-  const stopRoulette = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    timeoutRefs.current.forEach(clearTimeout);
-    timeoutRefs.current = [];
-
-    setIsRunning(false);
-    isRunningRef.current = false;
-    setCurrentHighlight(null);
-  };
-
-  // Сброс рулетки
   const resetRoulette = () => {
-    stopRoulette();
-
+    clearAllTimers();
     if (films && films.length > 0) {
-      setCurrentFilms([...films]);
-      setCurrentHighlight(null);
-      setWinner(null);
-      setIsRunning(false);
-      isRunningRef.current = false;
-      remainingFilmsRef.current = [...films];
+      resetState(films);
     }
   };
 
-  // Очистка при размонтировании
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      timeoutRefs.current.forEach(clearTimeout);
-    };
-  }, []);
+  // --- Рендер ---
 
   if (!films || films.length === 0) {
     return (
@@ -165,7 +162,6 @@ function Roulette({ films }: RouletteProps) {
   }
 
   const filmsToShow = currentFilms.length > 0 ? currentFilms : films;
-  const isWinnerDisplayed = winner !== null;
 
   return (
     <div className={styles.roulette}>
@@ -175,17 +171,17 @@ function Roulette({ films }: RouletteProps) {
           onClick={isRunning ? stopRoulette : startRoulette}
           disabled={filmsToShow.length <= 1 && !isRunning}
         >
-          {isRunning ? (
-            <div className={styles.btn_start}>
-              <Icon icon="material-symbols-light:pause-outline" width="20" />
-              <p>Стоп</p>
-            </div>
-          ) : (
-            <div className={styles.btn_start}>
-              <Icon icon="boxicons:play" width="20" />
-              <p>Старт</p>
-            </div>
-          )}
+          <div className={styles.btn_start}>
+            <Icon
+              icon={
+                isRunning
+                  ? "material-symbols-light:pause-outline"
+                  : "boxicons:play"
+              }
+              width="20"
+            />
+            <p>{isRunning ? "Стоп" : "Старт"}</p>
+          </div>
         </button>
         <button
           className={styles.rouletteButtonSecondary}
@@ -199,19 +195,36 @@ function Roulette({ films }: RouletteProps) {
         </button>
       </div>
 
-      <div className={styles.rouletteGrid}>
-        {filmsToShow.map((film) => {
-          const isHighlighted = currentHighlight === film.id;
-          const isWinnerFilm = isWinnerDisplayed && winner?.id === film.id;
-
-          return (
+      {winner ? (
+        <div className={styles.winnerView}>
+          <div
+            className={styles.winnerCard}
+            style={{
+              backgroundImage: winner.poster
+                ? `url(${winner.poster})`
+                : undefined,
+            }}
+          >
+            <div className={styles.winnerCardOverlay} />
+            <div className={styles.winnerCardContent}>
+              <div className={styles.winnerCardTitle}>{winner.title}</div>
+              {winner.year && (
+                <div className={styles.winnerCardMeta}>{winner.year}</div>
+              )}
+              <div className={styles.winnerCardFrom}>{winner.from}</div>
+            </div>
+          </div>
+          <div className={styles.winnerAnnouncement}>
+            <Icon icon="material-symbols:trophy" width="44" className={styles.winnerTrophy} />
+            <h2 className={styles.winnerText}>Победитель!</h2>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.rouletteGrid}>
+          {filmsToShow.map((film) => (
             <div
               key={film.id}
-              className={`
-                ${styles.filmCard}
-                ${isHighlighted ? styles.highlighted : ""}
-                ${isWinnerFilm ? styles.winner : ""}
-              `}
+              className={filmCardClassName(film)}
               style={{
                 backgroundImage: film.poster
                   ? `url(${film.poster})`
@@ -225,16 +238,13 @@ function Roulette({ films }: RouletteProps) {
                   <div className={styles.filmCardMeta}>{film.year}</div>
                 )}
                 <div className={styles.filmCardFrom}>{film.from}</div>
-                {isWinnerFilm && (
-                  <div className={styles.winnerBadge}>🏆 Победитель!</div>
-                )}
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {filmsToShow.length === 0 && (
+      {filmsToShow.length === 0 && !winner && (
         <p className={styles.emptyState}>Все фильмы выбыли</p>
       )}
     </div>

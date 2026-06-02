@@ -15,7 +15,7 @@ export default function Home() {
     <div className={styles.page}>
       <div className={styles.header}>
         <img src="/favicon.png" alt="Logo" className={styles.logo} />
-        <h2>DScinema</h2>
+        <span className={styles.brand}>DScinema</span>
         <h1>Вход в рулетку</h1>
         <p>Выбери, как войти в бурмалдянку</p>
       </div>
@@ -25,8 +25,10 @@ export default function Home() {
           <h2>Участник</h2>
           <p>Присоединиться к существующей сессии и предлагать свои фильмы</p>
           <Link href={me ? `/member/${me}` : "/ChooseProfile"}>
-            <Icon icon="" />
-            <button>Войти как участник</button>
+            <button>
+              <Icon icon="mdi:account-outline" width="18" />
+              Войти как участник
+            </button>
           </Link>
         </div>
 
@@ -36,7 +38,10 @@ export default function Home() {
             Создать новую сессию, управлять списком фильмов и запускать рулетку
           </p>
           <Link href={`/host`}>
-            <button>Войти как хост</button>
+            <button>
+              <Icon icon="mdi:monitor-screenshot" width="18" />
+              Войти как хост
+            </button>
           </Link>
         </div>
       </div>

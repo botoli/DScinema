@@ -7,7 +7,7 @@ import AddFilmModal from "../../components/AddModal/addFilmModal";
 import { Film } from "../../services/api";
 import { api } from "../../services/api";
 import { Icon } from "@iconify/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 function Main() {
@@ -16,6 +16,7 @@ function Main() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [me, setMe] = useState("");
+  const router = useRouter();
   const users = [
     { id: "dzhebra", name: "Джебра" },
     { id: "artem", name: "Артем" },
@@ -75,7 +76,7 @@ function Main() {
   async function deleteFilm(id: string) {
     try {
       await api.deleteFilm(id);
-      setFilms((prev) => prev.filter((f) => f.id !== id && f.from === me));
+      setFilms((prev) => prev.filter((f) => f.id !== id));
     } catch (err) {
       console.error("Ошибка удаления фильма:", err);
     }
@@ -109,7 +110,7 @@ function Main() {
         </div>
         <div className={styles.film_section__header}>
           <div className={styles.left_side}>
-            <h1>Мой список фильмов</h1>
+            <h2>Мой список фильмов</h2>
             <p>{films.length}</p>
           </div>
           <button onClick={() => setisopenModal(true)}>Добавить фильм</button>
@@ -139,7 +140,7 @@ function Main() {
             className={styles.logout_btn}
             onClick={() => {
               localStorage.removeItem("me");
-              redirect("/");
+              router.push("/");
             }}
           >
             Выйти
@@ -150,14 +151,34 @@ function Main() {
         <div className={styles.film_section__main}>
           {loading && <p className={styles.loading}>Загрузка фильмов...</p>}
           {error && <p className={styles.error}>{error}</p>}
+          {!loading && !error && films.length === 0 && (
+            <div className={styles.emptyState}>
+              <Icon icon="mdi:movie-open-outline" width="36" />
+              <p>Нет фильмов. Добавьте первый фильм!</p>
+            </div>
+          )}
           {!loading &&
             !error &&
+            films.length > 0 &&
             Object.entries(grouped).map(([person, personFilms]) => (
               <div key={person} className={styles.from_cards}>
-                <h1>{person}</h1>
+                <h3>{person}</h3>
                 {personFilms.map((film) => (
-                  <div key={film.id}>
-                    {film.title}
+                  <div key={film.id} className={styles.filmRow}>
+                    <div className={styles.filmRowInfo}>
+                      {film.poster ? (
+                        <img
+                          src={film.poster}
+                          alt=""
+                          className={styles.filmRowPoster}
+                        />
+                      ) : (
+                        <div className={styles.filmRowNoPoster}>
+                          <Icon icon="mdi:movie-outline" width="16" />
+                        </div>
+                      )}
+                      <span>{film.title}</span>
+                    </div>
                     <button
                       className={styles.deleteFilm}
                       onClick={() => deleteFilm(film.id)}
@@ -171,7 +192,7 @@ function Main() {
         </div>
       </div>
       <div>
-        <h3>Все фильмы в очереди </h3>
+        <h2 className={styles.queueHeader}>Все фильмы в очереди</h2>
 
         <div className={styles.rouletteGrid}>
           {allFilms.map((film) => {

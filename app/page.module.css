@@ -13,17 +13,19 @@
   margin-bottom: 56px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
+.brand {
+  display: block;
+  margin: 12px 0 0;
+  font-size: 1.8rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  color: var(--foreground);
+  color: var(--accent);
 }
-.header h2 {
-  margin: 0;
-  font-size: 2.5rem;
+
+.header h1 {
+  margin: 8px 0 0;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -54,6 +56,11 @@
   align-items: flex-start;
   gap: 20px;
   position: relative;
+  transition: background 0.2s ease;
+}
+
+.pane:hover {
+  background: var(--surface);
 }
 
 .pane:first-child {
@@ -68,8 +75,8 @@
   color: var(--foreground);
 }
 .logo {
-  width: 260px;
-  height: 260px;
+  width: 70px;
+  height: 70px;
 }
 .pane p {
   margin: 0;
@@ -89,6 +96,10 @@
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .pane button:hover {

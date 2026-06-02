@@ -8,12 +8,13 @@ import { Film } from "../services/api";
 import { api } from "../services/api";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function Main() {
   const [films, setFilms] = useState<Film[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // Загружаем фильмы с json-server при монтировании
   useEffect(() => {
@@ -78,20 +79,22 @@ function Main() {
         </Link>
         <div className={styles.film_section__header}>
           <div className={styles.left_side}>
-            <h1>Список фильмов</h1>
+            <h2>Список фильмов</h2>
             <p>{films.length}</p>
           </div>
-          <button onClick={() => setisopenModal(true)}>Добавить фильм</button>
-          <button
-            className={styles.logout_btn}
-            onClick={() => {
-              localStorage.removeItem("me");
-              redirect("/");
-            }}
-          >
-            Выйти
-            <Icon icon="mdi:logout" />
-          </button>
+          <div className={styles.header_actions}>
+            <button onClick={() => setisopenModal(true)}>Добавить фильм</button>
+            <button
+              className={styles.logout_btn}
+              onClick={() => {
+                localStorage.removeItem("me");
+                router.push("/");
+              }}
+            >
+              Выйти
+              <Icon icon="mdi:logout" />
+            </button>
+          </div>
           {isopenModal && (
             <AddFilmModal
               changeOpen={setisopenModal}
@@ -119,14 +122,34 @@ function Main() {
         <div className={styles.film_section__main}>
           {loading && <p className={styles.loading}>Загрузка фильмов...</p>}
           {error && <p className={styles.error}>{error}</p>}
+          {!loading && !error && films.length === 0 && (
+            <div className={styles.emptyState}>
+              <Icon icon="mdi:movie-open-outline" width="36" />
+              <p>Нет фильмов. Добавьте первый фильм!</p>
+            </div>
+          )}
           {!loading &&
             !error &&
+            films.length > 0 &&
             Object.entries(grouped).map(([person, personFilms]) => (
               <div key={person} className={styles.from_cards}>
-                <h1>{person}</h1>
+                <h3>{person}</h3>
                 {personFilms.map((film) => (
-                  <div key={film.id}>
-                    {film.title}
+                  <div key={film.id} className={styles.filmRow}>
+                    <div className={styles.filmRowInfo}>
+                      {film.poster ? (
+                        <img
+                          src={film.poster}
+                          alt=""
+                          className={styles.filmRowPoster}
+                        />
+                      ) : (
+                        <div className={styles.filmRowNoPoster}>
+                          <Icon icon="mdi:movie-outline" width="16" />
+                        </div>
+                      )}
+                      <span>{film.title}</span>
+                    </div>
                     <button
                       className={styles.deleteFilm}
                       onClick={() => deleteFilm(film.id)}
