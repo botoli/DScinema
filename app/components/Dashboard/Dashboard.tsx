@@ -37,7 +37,7 @@ function Dashboard({ variant }: DashboardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [me, setMe] = useState("");
-  const [autoSync, setAutoSync] = useState(true);
+  const [autoSync, setAutoSync] = useState(false);
   const [isopenModal, setisopenModal] = useState(false);
   const [patchNotesOpen, setPatchNotesOpen] = useState(false);
   const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
