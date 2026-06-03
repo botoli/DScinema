@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./Roulette.module.css";
 import { Icon } from "@iconify/react";
 import { api, type Film } from "../services/api";
+import WatchLinks from "./WatchLinks/WatchLinks";
 
 interface RouletteProps {
   films: Film[];
@@ -197,25 +198,32 @@ function Roulette({ films }: RouletteProps) {
 
       {winner ? (
         <div className={styles.winnerView}>
-          <div
-            className={styles.winnerCard}
-            style={{
-              backgroundImage: winner.poster
-                ? `url(${winner.poster})`
-                : undefined,
-            }}
-          >
-            <div className={styles.winnerCardOverlay} />
-            <div className={styles.winnerCardContent}>
-              <div className={styles.winnerCardTitle}>{winner.title}</div>
-              {winner.year && (
-                <div className={styles.winnerCardMeta}>{winner.year}</div>
-              )}
-              <div className={styles.winnerCardFrom}>{winner.from}</div>
+          <div className={styles.winnerContent}>
+            <div
+              className={styles.winnerCard}
+              style={{
+                backgroundImage: winner.poster
+                  ? `url(${winner.poster})`
+                  : undefined,
+              }}
+            >
+              <div className={styles.winnerCardOverlay} />
+              <div className={styles.winnerCardContent}>
+                <div className={styles.winnerCardTitle}>{winner.title}</div>
+                {winner.year && (
+                  <div className={styles.winnerCardMeta}>{winner.year}</div>
+                )}
+                <div className={styles.winnerCardFrom}>{winner.from}</div>
+              </div>
             </div>
+            <WatchLinks title={winner.title} year={winner.year} />
           </div>
           <div className={styles.winnerAnnouncement}>
-            <Icon icon="material-symbols:trophy" width="44" className={styles.winnerTrophy} />
+            <Icon
+              icon="material-symbols:trophy"
+              width="44"
+              className={styles.winnerTrophy}
+            />
             <h2 className={styles.winnerText}>Победитель!</h2>
           </div>
         </div>

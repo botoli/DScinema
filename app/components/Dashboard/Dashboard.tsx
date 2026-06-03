@@ -7,11 +7,12 @@ import { api, type Film, type PatchNote } from "../../services/api";
 import AddFilmModal from "../AddModal/addFilmModal";
 import Roulette from "../Roulette";
 import Tooltip from "../Tooltip/Tooltip";
+import WinnersTab from "../WinnersTab/WinnersTab";
 import styles from "./Dashboard.module.css";
 
 const USERS = [
   { id: "dzhebra", name: "Джебра" },
-  { id: "artem", name: "Артем" },
+  { id: "artem", name: "Артём" },
   { id: "andrey", name: "Андрей" },
   { id: "misha", name: "Миша" },
 ];
@@ -40,6 +41,7 @@ function Dashboard({ variant }: DashboardProps) {
   const [isopenModal, setisopenModal] = useState(false);
   const [patchNotesOpen, setPatchNotesOpen] = useState(false);
   const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
+  const [showWinners, setShowWinners] = useState(false);
   const router = useRouter();
 
   const isMember = variant === "member";
@@ -248,6 +250,16 @@ function Dashboard({ variant }: DashboardProps) {
 
           <span className={styles.actionSep} />
 
+          <Tooltip label="Посмотреть предыдущих победителей">
+            <button
+              className={`${styles.winnersBtn} ${showWinners ? styles.winnersActive : ""}`}
+              onClick={() => setShowWinners((v) => !v)}
+            >
+              <Icon icon="mdi:trophy-outline" width="18" />
+              Победители
+            </button>
+          </Tooltip>
+
           <Tooltip label="Добавить новый фильм в очередь">
             <button
               className={styles.addBtn}
@@ -272,101 +284,113 @@ function Dashboard({ variant }: DashboardProps) {
         </div>
       </div>
 
-      <div className={styles.content}>
-        {/* Левая панель — список фильмов */}
-        <div className={styles.filmSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{title}</h2>
-            <span className={styles.sectionCount}>{films.length}</span>
+      {showWinners ? (
+        <div className={styles.winnersSection}>
+          <div className={styles.winnersHeader}>
+            <h2 className={styles.winnersTitle}>
+              <Icon icon="mdi:trophy-outline" width="22" />
+              Предыдущие победители
+            </h2>
           </div>
-
-          {isopenModal && (
-            <AddFilmModal
-              changeOpen={setisopenModal}
-              onAddFilms={handleAddFilms}
-            />
-          )}
-
-          <div className={styles.filmList}>
-            {loading && (
-              <p className={styles.statusText}>Загрузка фильмов...</p>
-            )}
-            {error && <p className={styles.errorText}>{error}</p>}
-            {!loading && !error && films.length === 0 && (
-              <div className={styles.emptyState}>
-                <Icon icon="mdi:movie-open-outline" width="36" />
-                <p>Нет фильмов. Добавьте первый фильм!</p>
-              </div>
-            )}
-            {!loading &&
-              !error &&
-              films.length > 0 &&
-              Object.entries(grouped).map(([person, personFilms]) => (
-                <div key={person} className={styles.group}>
-                  <h3 className={styles.groupTitle}>{person}</h3>
-                  {personFilms.map((film) => (
-                    <div key={film.id} className={styles.filmRow}>
-                      <div className={styles.filmRowInfo}>
-                        {film.poster ? (
-                          <img
-                            src={film.poster}
-                            alt=""
-                            className={styles.filmRowPoster}
-                          />
-                        ) : (
-                          <div className={styles.filmRowNoPoster}>
-                            <Icon icon="mdi:movie-outline" width="16" />
-                          </div>
-                        )}
-                        <span>{film.title}</span>
-                      </div>
-                      <button
-                        className={styles.deleteFilm}
-                        onClick={() => deleteFilm(film.id)}
-                      >
-                        <Icon icon="mdi:delete" width="24" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ))}
-          </div>
+          <WinnersTab />
         </div>
+      ) : (
+        <div className={styles.content}>
+          {/* Левая панель — список фильмов */}
+          <div className={styles.filmSection}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>{title}</h2>
+              <span className={styles.sectionCount}>{films.length}</span>
+            </div>
 
-        {/* Правая панель — рулетка или очередь */}
-        {isMember ? (
-          <div>
-            <h2 className={styles.queueHeader}>Все фильмы в очереди</h2>
-            <div className={styles.filmGrid}>
-              {allFilms.map((film) => (
-                <div
-                  key={film.id}
-                  className={styles.filmCard}
-                  style={{
-                    backgroundImage: film.poster
-                      ? `url(${film.poster})`
-                      : undefined,
-                  }}
-                >
-                  <div className={styles.filmCardOverlay} />
-                  <div className={styles.filmCardContent}>
-                    <div className={styles.filmCardTitle}>{film.title}</div>
-                    {film.year && (
-                      <div className={styles.filmCardMeta}>{film.year}</div>
-                    )}
-                    <div className={styles.filmCardFrom}>{film.from}</div>
-                  </div>
+            {isopenModal && (
+              <AddFilmModal
+                changeOpen={setisopenModal}
+                onAddFilms={handleAddFilms}
+              />
+            )}
+
+            <div className={styles.filmList}>
+              {loading && (
+                <p className={styles.statusText}>Загрузка фильмов...</p>
+              )}
+              {error && <p className={styles.errorText}>{error}</p>}
+              {!loading && !error && films.length === 0 && (
+                <div className={styles.emptyState}>
+                  <Icon icon="mdi:movie-open-outline" width="36" />
+                  <p>Нет фильмов. Добавьте первый фильм!</p>
                 </div>
-              ))}
+              )}
+              {!loading &&
+                !error &&
+                films.length > 0 &&
+                Object.entries(grouped).map(([person, personFilms]) => (
+                  <div key={person} className={styles.group}>
+                    <h3 className={styles.groupTitle}>{person}</h3>
+                    {personFilms.map((film) => (
+                      <div key={film.id} className={styles.filmRow}>
+                        <div className={styles.filmRowInfo}>
+                          {film.poster ? (
+                            <img
+                              src={film.poster}
+                              alt=""
+                              className={styles.filmRowPoster}
+                            />
+                          ) : (
+                            <div className={styles.filmRowNoPoster}>
+                              <Icon icon="mdi:movie-outline" width="16" />
+                            </div>
+                          )}
+                          <span>{film.title}</span>
+                        </div>
+                        <button
+                          className={styles.deleteFilm}
+                          onClick={() => deleteFilm(film.id)}
+                        >
+                          <Icon icon="mdi:delete" width="24" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
             </div>
           </div>
-        ) : (
-          <div className={styles.rouletteSection}>
-            <h1 className={styles.rouletteHeader}>Рулетка</h1>
-            <Roulette films={films} />
-          </div>
-        )}
-      </div>
+
+          {/* Правая панель — рулетка или очередь */}
+          {isMember ? (
+            <div>
+              <h2 className={styles.queueHeader}>Все фильмы в очереди</h2>
+              <div className={styles.filmGrid}>
+                {allFilms.map((film) => (
+                  <div
+                    key={film.id}
+                    className={styles.filmCard}
+                    style={{
+                      backgroundImage: film.poster
+                        ? `url(${film.poster})`
+                        : undefined,
+                    }}
+                  >
+                    <div className={styles.filmCardOverlay} />
+                    <div className={styles.filmCardContent}>
+                      <div className={styles.filmCardTitle}>{film.title}</div>
+                      {film.year && (
+                        <div className={styles.filmCardMeta}>{film.year}</div>
+                      )}
+                      <div className={styles.filmCardFrom}>{film.from}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={styles.rouletteSection}>
+              <h1 className={styles.rouletteHeader}>Рулетка</h1>
+              <Roulette films={films} />
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Patch notes */}
       {patchNotes.length > 0 && (

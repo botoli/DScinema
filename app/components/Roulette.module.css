@@ -209,9 +209,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
   padding: 32px 0;
   animation: winnerAppear 0.5s ease-out;
+}
+
+.winnerContent {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 @keyframes winnerAppear {
@@ -226,7 +236,8 @@
 }
 
 .winnerCard {
-  width: min(320px, 80%);
+  width: 220px;
+  flex-shrink: 0;
   aspect-ratio: 2 / 3;
   background-size: cover;
   background-position: center;
@@ -305,4 +316,16 @@
   color: var(--accent);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .winnerContent {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .winnerCard {
+    width: 180px;
+  }
 }
