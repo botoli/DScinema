@@ -21,7 +21,7 @@ export default function Home() {
       </div>
 
       <div className={styles.split}>
-        <div className={styles.pane}>
+        <div className={styles.pane} style={{"--i": 0} as React.CSSProperties}>
           <h2>Участник</h2>
           <p>Присоединиться к существующей сессии и предлагать свои фильмы</p>
           <Link href={me ? `/member/${me}` : "/ChooseProfile"}>
@@ -32,7 +32,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className={styles.pane}>
+        <div className={styles.pane} style={{"--i": 1} as React.CSSProperties}>
           <h2>Хост</h2>
           <p>
             Создать новую сессию, управлять списком фильмов и запускать рулетку

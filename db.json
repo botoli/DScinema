@@ -1,5 +1,32 @@
 {
   "films": [],
-  "winners": [],
+  "winners": [
+    {
+      "film": {
+        "title": "Ва-ни и Чун-ха",
+        "from": "Андрей",
+        "year": 2001,
+        "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/58419b19-fe78-45dd-a2d1-da446887d5df/300x450",
+        "engName": "andrey",
+        "id": "q7jl6mwywl",
+        "addedAt": "2026-06-07T18:46:56.648Z"
+      },
+      "wonAt": "2026-06-07T18:47:09.739Z",
+      "id": "llszlpo2wm"
+    },
+    {
+      "film": {
+        "title": "Ва-банк",
+        "from": "Андрей",
+        "year": 2019,
+        "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/96c9fa36-cfb7-4508-a013-fcaa071e7076/300x450",
+        "engName": "andrey",
+        "id": "3tzt2oh5v3",
+        "addedAt": "2026-06-07T18:46:56.630Z"
+      },
+      "wonAt": "2026-06-07T18:48:21.878Z",
+      "id": "rx6geewmzj"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

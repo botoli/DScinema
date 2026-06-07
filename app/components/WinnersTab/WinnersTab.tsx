@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
-import { api, type Winner } from "../../services/api";
+import { useWinners } from "../../hooks/useWinners";
 import styles from "./WinnersTab.module.css";
 
 function formatDate(iso: string): string {
@@ -20,29 +19,15 @@ function formatDate(iso: string): string {
 }
 
 export default function WinnersTab() {
-  const [winners, setWinners] = useState<Winner[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: winnersData, isLoading, isError } = useWinners();
+  const winners = winnersData ? [...winnersData].reverse() : [];
 
-  useEffect(() => {
-    api
-      .getWinners()
-      .then((data) => {
-        setWinners(data.reverse()); // новые сверху
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Не удалось загрузить список победителей");
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <p className={styles.status}>Загрузка победителей...</p>;
   }
 
-  if (error) {
-    return <p className={styles.error}>{error}</p>;
+  if (isError) {
+    return <p className={styles.error}>Не удалось загрузить список победителей</p>;
   }
 
   if (winners.length === 0) {
@@ -60,11 +45,11 @@ export default function WinnersTab() {
         <div
           key={w.id}
           className={styles.card}
-          style={
-            w.film.poster
-              ? { backgroundImage: `url(${w.film.poster})` }
-              : undefined
-          }
+          style={{
+            backgroundImage: w.film.poster
+              ? `url(${w.film.poster})`
+              : undefined,
+          }}
         >
           <div className={styles.cardOverlay} />
           <div className={styles.cardContent}>

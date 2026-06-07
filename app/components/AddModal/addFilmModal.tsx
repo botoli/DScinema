@@ -16,9 +16,14 @@ interface Film {
 interface AddFilmModalProps {
   changeOpen: (isOpen: boolean) => void;
   onAddFilms: (films: Film[], userName: string) => void;
+  buttonRect?: DOMRect | null;
 }
 
-function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
+function AddFilmModal({
+  changeOpen,
+  onAddFilms,
+  buttonRect,
+}: AddFilmModalProps) {
   const [filmName, setFilmName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -26,17 +31,20 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<string>("");
   const [me, setMe] = useState("");
+  const modalRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
   useEffect(() => {
     const savedMe = localStorage.getItem("me") || "";
     setMe(savedMe);
   }, []);
-  // Для member-авто-устанавливаем selectedUser из localStorage
+
   useEffect(() => {
     if (pathname.startsWith("/member/") && me) {
       setSelectedUser(me);
     }
   }, [pathname, me]);
+
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -49,14 +57,12 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
 
   const API_KEY = process.env.NEXT_PUBLIC_KINOPOISK_API_KEY;
 
-  // Функция поиска с отменой предыдущего запроса
   const searchFilm = async (query: string) => {
     if (!query.trim() || query.length < 2) {
       setSearchResults([]);
       return;
     }
 
-    // Отменяем предыдущий запрос
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -86,7 +92,6 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
       setSearchResults(data.docs || []);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
-        // Игнорируем abort ошибки
         return;
       }
       setError(err instanceof Error ? err.message : "Произошла ошибка");
@@ -95,13 +100,12 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
       setIsLoading(false);
     }
   };
-  // Debounce эффект
+
   useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Ждем 500ms после последнего ввода
     debounceTimerRef.current = setTimeout(() => {
       if (filmName.trim().length >= 2) {
         searchFilm(filmName);
@@ -118,7 +122,6 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
     };
   }, [filmName]);
 
-  // Очистка при размонтировании
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
@@ -159,8 +162,16 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={() => changeOpen(false)}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.modalOverlay}
+      onClick={() => changeOpen(false)}
+    >
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* весь остальной контент без изменений */}
         <div className={styles.modal__header}>
           <h1>Добавить фильмы</h1>
           <div className={styles.closeIcon} onClick={() => changeOpen(false)}>
@@ -168,7 +179,6 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
           </div>
         </div>
 
-        {/* Блок выбора пользователя */}
         {!pathname.startsWith("/member/") && (
           <div className={styles.userSelection}>
             <h3>Кто добавляет?</h3>
@@ -227,7 +237,10 @@ function AddFilmModal({ changeOpen, onAddFilms }: AddFilmModalProps) {
                 <h3>Результаты поиска:</h3>
                 <div className={styles.resultsList}>
                   {searchResults.map((movie) => (
-                    <div key={movie.id} className={styles.resultItem}>
+                    <div
+                      key={movie.id}
+                      className={styles.resultItem}
+                    >
                       <div className={styles.posterContainer}>
                         {movie.poster?.previewUrl || movie.poster?.url ? (
                           <img

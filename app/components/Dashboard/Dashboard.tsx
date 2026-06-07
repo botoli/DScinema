@@ -1,9 +1,15 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { api, type Film, type PatchNote } from "../../services/api";
+import {
+  useAllFilms,
+  useFilmsByUser,
+  useAddFilms,
+  useDeleteFilm,
+} from "../../hooks/useFilms";
+import { usePatchNotes } from "../../hooks/usePatchNotes";
 import AddFilmModal from "../AddModal/addFilmModal";
 import Roulette from "../Roulette";
 import Tooltip from "../Tooltip/Tooltip";
@@ -32,20 +38,19 @@ interface DashboardProps {
 }
 
 function Dashboard({ variant }: DashboardProps) {
-  const [films, setFilms] = useState<Film[]>([]);
-  const [allFilms, setAllFilms] = useState<Film[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [me, setMe] = useState("");
   const [autoSync, setAutoSync] = useState(false);
-  const [isopenModal, setisopenModal] = useState(false);
+  const [isopenModal, setIsopenModal] = useState(false);
+  const [modalButtonRect, setModalButtonRect] = useState<DOMRect | null>(null);
+  const addBtnRef = useRef<HTMLButtonElement>(null);
   const [patchNotesOpen, setPatchNotesOpen] = useState(false);
-  const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
   const [showWinners, setShowWinners] = useState(false);
   const router = useRouter();
 
   const isMember = variant === "member";
   const title = isMember ? "Мой список фильмов" : "Список фильмов";
+
+  const pollingInterval = autoSync ? 20_000 : false;
 
   // Инициализация me (только для member)
   useEffect(() => {
@@ -55,139 +60,48 @@ function Dashboard({ variant }: DashboardProps) {
     }
   }, [isMember]);
 
-  // Загрузка всех фильмов
-  const fetchAll = useCallback(() => {
-    return api
-      .getFilms()
-      .then((data) => {
-        setAllFilms(data);
-        if (!isMember) setFilms(data);
-        setLoading(false);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error("Ошибка загрузки фильмов:", err);
-        setError("Не удалось загрузить фильмы.");
-        setLoading(false);
-      });
-  }, [isMember]);
-
-  // Загрузка своих фильмов (только для member)
-  const fetchMy = useCallback(() => {
-    if (!me || !isMember) return Promise.resolve();
-    return api
-      .getFilmsByName(me)
-      .then((data) => {
-        setFilms(data);
-        setLoading(false);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error("Ошибка загрузки фильмов:", err);
-        setError("Не удалось загрузить фильмы.");
-        setLoading(false);
-      });
-  }, [me, isMember]);
-
-  // Первичная загрузка
-  useEffect(() => {
-    if (isMember && !me) return;
-    fetchAll();
-    if (isMember) fetchMy();
-  }, [me, isMember, fetchAll, fetchMy]);
-
-  // Автосинхронизация с polling
-  useEffect(() => {
-    if (!autoSync) return;
-    if (isMember && !me) return;
-    let cancelled = false;
-
-    const safeAll = () => {
-      if (cancelled) return;
-      api
-        .getFilms()
-        .then((data) => {
-          if (!cancelled) {
-            setAllFilms(data);
-            if (!isMember) setFilms(data);
-            setLoading(false);
-            setError(null);
-          }
-        })
-        .catch(() => {
-          if (!cancelled) setError("Не удалось загрузить фильмы.");
-        });
-    };
-
-    let safeMy: (() => void) | null = null;
-    if (isMember) {
-      safeMy = () => {
-        if (!me || cancelled) return;
-        api
-          .getFilmsByName(me)
-          .then((data) => {
-            if (!cancelled) {
-              setFilms(data);
-              setLoading(false);
-              setError(null);
-            }
-          })
-          .catch(() => {
-            if (!cancelled) setError("Не удалось загрузить фильмы.");
-          });
-      };
-    }
-
-    safeAll();
-    safeMy?.();
-
-    const intervalAll = setInterval(safeAll, 20_000);
-    const intervalMy = isMember ? setInterval(safeMy!, 20_000) : null;
-
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        safeAll();
-        safeMy?.();
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    return () => {
-      cancelled = true;
-      clearInterval(intervalAll);
-      if (intervalMy) clearInterval(intervalMy);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-  }, [me, autoSync, isMember]);
-
-  // Загрузка patch notes
-  useEffect(() => {
-    api
-      .getPatchNotes()
-      .then(setPatchNotes)
-      .catch(() => {});
-  }, []);
+  // Запросы через React Query
+  const allFilmsQuery = useAllFilms({
+    refetchInterval: pollingInterval,
+  });
+  const myFilmsQuery = useFilmsByUser(me, {
+    enabled: isMember && !!me,
+    refetchInterval: pollingInterval,
+  });
+  const patchNotesQuery = usePatchNotes();
+  const addFilmsMutation = useAddFilms();
+  const deleteFilmMutation = useDeleteFilm();
 
   // Ручная синхронизация
   const handleSync = () => {
-    fetchAll();
-    if (isMember) fetchMy();
+    allFilmsQuery.refetch();
+    if (isMember) myFilmsQuery.refetch();
   };
+
+  const films = isMember ? (myFilmsQuery.data ?? []) : (allFilmsQuery.data ?? []);
+  const allFilms = allFilmsQuery.data ?? [];
+  const loading = isMember
+    ? allFilmsQuery.isPending || (!!me && myFilmsQuery.isPending)
+    : allFilmsQuery.isPending;
+  const error = allFilmsQuery.error || (isMember ? myFilmsQuery.error : null);
+  const patchNotes = patchNotesQuery.data ?? [];
 
   // Удаление фильма
   async function deleteFilm(id: string) {
     try {
-      await api.deleteFilm(id);
-      setFilms((prev) => prev.filter((f) => f.id !== id));
+      await deleteFilmMutation.mutateAsync(id);
     } catch (err) {
       console.error("Ошибка удаления фильма:", err);
     }
   }
 
   // Добавление фильмов
-  async function handleAddFilms(newFilms: any[], userName: string) {
+  async function handleAddFilms(
+    newFilms: any[],
+    userName: string,
+  ) {
     try {
-      const addedFilms = await api.addFilms(
+      await addFilmsMutation.mutateAsync(
         newFilms.map((f) => ({
           title: f.title,
           from: isMember ? getUserName(f.from || me) : f.from || userName,
@@ -196,7 +110,6 @@ function Dashboard({ variant }: DashboardProps) {
           engName: isMember ? me : getUserEngName(f.from || userName),
         })),
       );
-      setFilms((prev) => [...prev, ...addedFilms]);
     } catch (err) {
       console.error("Ошибка добавления фильмов:", err);
     }
@@ -262,8 +175,13 @@ function Dashboard({ variant }: DashboardProps) {
 
           <Tooltip label="Добавить новый фильм в очередь">
             <button
+              ref={addBtnRef}
               className={styles.addBtn}
-              onClick={() => setisopenModal(true)}
+              onClick={() => {
+                const rect = addBtnRef.current?.getBoundingClientRect();
+                setModalButtonRect(rect ?? null);
+                setIsopenModal(true);
+              }}
             >
               <Icon icon="mdi:plus" width="18" />
               Добавить
@@ -305,8 +223,12 @@ function Dashboard({ variant }: DashboardProps) {
 
             {isopenModal && (
               <AddFilmModal
-                changeOpen={setisopenModal}
+                changeOpen={(v) => {
+                  setIsopenModal(v);
+                  if (!v) setModalButtonRect(null);
+                }}
                 onAddFilms={handleAddFilms}
+                buttonRect={modalButtonRect}
               />
             )}
 
@@ -314,7 +236,7 @@ function Dashboard({ variant }: DashboardProps) {
               {loading && (
                 <p className={styles.statusText}>Загрузка фильмов...</p>
               )}
-              {error && <p className={styles.errorText}>{error}</p>}
+              {error && <p className={styles.errorText}>Не удалось загрузить фильмы.</p>}
               {!loading && !error && films.length === 0 && (
                 <div className={styles.emptyState}>
                   <Icon icon="mdi:movie-open-outline" width="36" />

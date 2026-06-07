@@ -1,10 +1,13 @@
 import "./globals.css";
+import Providers from "./providers";
+
 export const metadata = {
   title: "Ds Cinema",
   icons: {
-    icon: "/favicon.png", // Next.js сам найдет файл в app/
+    icon: "/favicon.png",
   },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -12,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

@@ -75,9 +75,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
 }
 
 .syncBtn:hover {
@@ -97,7 +94,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
@@ -150,7 +146,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
@@ -178,7 +173,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
@@ -198,7 +192,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .logoutBtn:hover {
@@ -319,7 +312,6 @@
   border-radius: 4px;
   line-height: 1;
   opacity: 0.45;
-  transition: all 0.15s ease;
 }
 
 .deleteFilm:hover {
@@ -399,13 +391,28 @@
   aspect-ratio: 2 / 3;
   position: relative;
   overflow: hidden;
-  transition:
-    border-color 0.25s ease,
-    opacity 0.35s ease;
 }
 
 .filmCard:hover {
   border-color: var(--foreground-muted);
+  filter: contrast(1.08) brightness(1.04);
+}
+
+/* Noise overlay на hover */
+.filmCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.85'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  opacity: 0;
+  mix-blend-mode: overlay;
+}
+
+.filmCard:hover::after {
+  opacity: 0.2;
 }
 
 .filmCardOverlay {
@@ -499,7 +506,6 @@
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 4px;
-  transition: all 0.2s;
   opacity: 0.5;
 }
 

@@ -19,8 +19,8 @@ export default function ChooseProfile() {
         <p>Выбери себя</p>
       </div>
       <div className={styles.split}>
-        {users.map((u) => (
-          <div className={styles.pane} key={u.id}>
+        {users.map((u, idx) => (
+          <div className={styles.pane} key={u.id} style={{"--i": idx} as React.CSSProperties}>
             <h2>{u.name}</h2>
             <p>Присоединиться к существующей сессии и предлагать свои фильмы</p>
             <Link href={`/member/${encodeURIComponent(u.id)}`}>

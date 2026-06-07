@@ -42,7 +42,6 @@
 .closeIcon {
   cursor: pointer;
   color: var(--foreground-muted);
-  transition: color 0.2s;
   display: flex;
   align-items: center;
 }
@@ -80,7 +79,6 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s;
 }
 
 .userLabel:hover {
@@ -141,7 +139,6 @@
   padding: 10px 14px;
   color: var(--foreground);
   font-size: 14px;
-  transition: all 0.2s;
 }
 
 .searchInput:focus {
@@ -163,19 +160,6 @@
   gap: 8px;
   color: var(--accent);
   font-size: 12px;
-}
-
-.loadingIndicator svg {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .noResults {
@@ -220,7 +204,6 @@
   gap: 12px;
   padding: 12px;
   border-bottom: 1px solid var(--border-light);
-  transition: background 0.2s;
 }
 
 .resultItem:hover {
@@ -311,7 +294,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
   color: var(--bg);
 }
 
@@ -427,7 +409,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
   color: var(--danger);
 }
 
@@ -473,7 +454,6 @@
   padding: 8px 20px;
   color: var(--foreground);
   cursor: pointer;
-  transition: all 0.2s;
 }
 
 .cancelButton:hover {
@@ -488,7 +468,6 @@
   color: var(--bg);
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .addFilmsButton:hover:not(:disabled) {

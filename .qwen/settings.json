@@ -4,7 +4,9 @@
       "Bash(npx *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Agent(Explore)",
+      "Bash(npm install *)"
     ]
   },
   "$version": 4

@@ -1,10 +1,12 @@
 "use client";
 // components/Roulette.tsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./Roulette.module.css";
 import { Icon } from "@iconify/react";
-import { api, type Film } from "../services/api";
+import { type Film } from "../services/api";
+import { useAddWinner } from "../hooks/useWinners";
 import WatchLinks from "./WatchLinks/WatchLinks";
+import { shuffleTransform } from "../utils/shuffle";
 
 interface RouletteProps {
   films: Film[];
@@ -16,6 +18,9 @@ function Roulette({ films }: RouletteProps) {
   const [eliminatingId, setEliminatingId] = useState<string | null>(null);
   const [winner, setWinner] = useState<Film | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [shuffleReady, setShuffleReady] = useState(false);
+
+  const addWinnerMutation = useAddWinner();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
@@ -79,8 +84,8 @@ function Roulette({ films }: RouletteProps) {
 
   const saveWinner = async (winnerFilm: Film) => {
     try {
-      await api.addWinner(winnerFilm);
-      console.log("Победитель сохранён в json-server:", winnerFilm.title);
+      await addWinnerMutation.mutateAsync(winnerFilm);
+      console.log("Победитель сохранён:", winnerFilm.title);
     } catch (err) {
       console.error("Ошибка сохранения победителя:", err);
     }
@@ -137,9 +142,11 @@ function Roulette({ films }: RouletteProps) {
           (f) => f.id !== eliminatedFilm.id,
         );
         setCurrentFilms([...remainingFilmsRef.current]);
-        setCurrentHighlight(null);
-        setEliminatingId(null);
-      }, 350);
+        setCurrentHighlight((prev) =>
+          prev === eliminatedFilm.id ? null : prev,
+        );
+        setEliminatingId((prev) => (prev === eliminatedFilm.id ? null : prev));
+      }, 700);
 
       timeoutRefs.current.push(timeoutId);
     }, 700);
