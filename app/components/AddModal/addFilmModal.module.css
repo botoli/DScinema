@@ -162,6 +162,15 @@
   font-size: 12px;
 }
 
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .noResults {
   display: flex;
   align-items: center;

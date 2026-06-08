@@ -14,14 +14,21 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const API_KEY = process.env.KINOPOISK_API_KEY; // Токен хранится в .env.local без NEXT_PUBLIC_
+  const API_KEY = process.env.KINOPOISK_API_KEY;
+
+  if (!API_KEY) {
+    return NextResponse.json(
+      { error: "API key is not configured" },
+      { status: 500 },
+    );
+  }
 
   try {
     const response = await fetch(
-      `https://api.poiskkino.dev/v1.4/movie/search?page=${page}&limit=${limit}&query=${encodeURIComponent(query)}`,
+      `https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=${encodeURIComponent(query)}&page=${page}`,
       {
         headers: {
-          "X-API-KEY": API_KEY || "",
+          "X-API-KEY": API_KEY,
         },
       },
     );
@@ -31,7 +38,30 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+
+    const docs = (data.films || []).slice(0, Number(limit)).map((film: any) => {
+      const year = film.year ? parseInt(film.year, 10) : undefined;
+
+      return {
+        id: film.filmId,
+        name: film.nameRu || film.nameEn || "",
+        alternativeName: film.nameEn || undefined,
+        enName: film.nameEn || undefined,
+        year: year && !isNaN(year) ? year : undefined,
+        poster: {
+          previewUrl: film.posterUrlPreview,
+          url: film.posterUrl,
+        },
+        rating: film.rating && film.rating !== "null"
+          ? { kp: parseFloat(parseFloat(film.rating).toFixed(1)) }
+          : undefined,
+        countries: film.countries?.length
+          ? film.countries.map((c: any) => ({ name: c.country }))
+          : undefined,
+      };
+    });
+
+    return NextResponse.json({ docs });
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(

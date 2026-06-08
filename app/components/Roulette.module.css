@@ -157,43 +157,27 @@
 @keyframes eliminateShake {
   0% {
     transform: translateX(0) scale(1);
-    background-color: transparent;
     border-color: var(--danger);
     opacity: 1;
   }
-  5% {
-    transform: translateX(-6px) scale(1);
-  }
   10% {
-    transform: translateX(6px) scale(1);
-  }
-  15% {
     transform: translateX(-6px) scale(1);
   }
   20% {
     transform: translateX(6px) scale(1);
   }
-  25% {
+  30% {
     transform: translateX(-4px) scale(1);
   }
-  30% {
+  40% {
     transform: translateX(4px) scale(1);
   }
-  35% {
-    transform: translateX(-2px) scale(1);
-  }
-  40% {
-    transform: translateX(2px) scale(1);
-  }
-  45% {
-    transform: translateX(0) scale(1);
-  }
-  55% {
+  50% {
     background-color: rgba(220, 38, 38, 0.35);
     transform: translateX(0) scale(1);
     opacity: 1;
   }
-  75% {
+  70% {
     background-color: rgba(220, 38, 38, 0.6);
     transform: translateX(0) scale(0.7);
     opacity: 0.6;
@@ -358,6 +342,35 @@
   color: var(--accent);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.winnerTimer {
+  font-size: 0.85rem;
+  color: var(--foreground-muted);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 18px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.removeBtn:hover {
+  background: var(--danger);
+  color: #fff;
 }
 
 @media (max-width: 640px) {

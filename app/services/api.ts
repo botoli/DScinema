@@ -17,6 +17,14 @@ export interface Winner {
   wonAt: string;
 }
 
+export interface RouletteState {
+  active: boolean;
+  eliminatedIds: string[];
+  winner: Film | null;
+  filmIds: string[];
+  wonAt?: number;
+}
+
 export interface PatchNote {
   version: string;
   description: string;
@@ -134,6 +142,46 @@ export const api = {
     });
     if (!response.ok) throw new Error("Failed to add winner");
     return response.json();
+  },
+
+  // ===== Рулетка =====
+
+  async getRouletteState(): Promise<RouletteState> {
+    const response = await fetch(`${API_URL}/roulette`);
+    if (!response.ok) throw new Error("Failed to fetch roulette state");
+    return response.json();
+  },
+
+  async startRoulette(filmIds: string[]): Promise<void> {
+    await fetch(`${API_URL}/roulette`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "start", filmIds }),
+    });
+  },
+
+  async eliminateFilm(filmId: string): Promise<void> {
+    await fetch(`${API_URL}/roulette`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "eliminate", filmId }),
+    });
+  },
+
+  async finishRoulette(winner: Film, wonAt?: number): Promise<void> {
+    await fetch(`${API_URL}/roulette`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "finish", winner, wonAt }),
+    });
+  },
+
+  async resetRoulette(): Promise<void> {
+    await fetch(`${API_URL}/roulette`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reset" }),
+    });
   },
 
   // ===== Patch notes =====

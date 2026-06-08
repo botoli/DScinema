@@ -1,6 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
+import {
+  MdPlayCircleOutline,
+  MdMovie,
+  MdOpenInNew,
+  MdLink,
+} from "react-icons/md";
 import styles from "./WatchLinks.module.css";
 
 interface WatchResult {
@@ -15,10 +20,10 @@ interface WatchLinksProps {
   year?: number;
 }
 
-const PLATFORM_ICONS: Record<string, string> = {
-  kinopoisk: "mdi:filmstrip",
-  rutube: "mdi:play-circle-outline",
-  vkvideo: "mdi:video-vintage",
+const PLATFORM_ICONS: Record<string, React.ReactNode> = {
+  kinopoisk: <MdMovie size={20} />,
+  rutube: <MdPlayCircleOutline size={20} />,
+  vkvideo: <MdPlayCircleOutline size={20} />,
 };
 
 const RELEVANCE_LABELS: Record<string, string> = {
@@ -82,7 +87,7 @@ export default function WatchLinks({ title, year }: WatchLinksProps) {
   return (
     <div className={styles.watchLinks}>
       <h3 className={styles.heading}>
-        <Icon icon="mdi:play-circle-outline" width="20" />
+        <MdPlayCircleOutline size={20} />
         Где посмотреть
       </h3>
 
@@ -110,10 +115,7 @@ export default function WatchLinks({ title, year }: WatchLinksProps) {
                 rel="noopener noreferrer"
                 className={styles.platformLink}
               >
-                <Icon
-                  icon={PLATFORM_ICONS[result.platform] || "mdi:link"}
-                  width="20"
-                />
+                {PLATFORM_ICONS[result.platform] || <MdLink size={20} />}
                 <div className={styles.platformInfo}>
                   <span className={styles.platformLabel}>
                     {result.label}
@@ -124,11 +126,7 @@ export default function WatchLinks({ title, year }: WatchLinksProps) {
                     {RELEVANCE_LABELS[level]}
                   </span>
                 </div>
-                <Icon
-                  icon="mdi:open-in-new"
-                  width="16"
-                  className={styles.externalIcon}
-                />
+                <MdOpenInNew size={16} className={styles.externalIcon} />
               </a>
             );
           })}

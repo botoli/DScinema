@@ -2,7 +2,14 @@
 // components/AddFilmModal.tsx
 import { useState, useEffect, useRef } from "react";
 import styles from "./addFilmModal.module.css";
-import { Icon } from "@iconify/react";
+import {
+  MdClose,
+  MdMovieCreation,
+  MdInfoOutline,
+  MdErrorOutline,
+  MdAdd,
+  MdRefresh,
+} from "react-icons/md";
 import { usePathname } from "next/navigation";
 
 interface Film {
@@ -123,12 +130,17 @@ function AddFilmModal({
   }, [filmName]);
 
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") changeOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
     return () => {
+      window.removeEventListener("keydown", onKeyDown);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, []);
+  }, [changeOpen]);
 
   const addFilmToSelection = (movie: any) => {
     const posterUrl = movie.poster?.previewUrl || movie.poster?.url || "";
@@ -175,7 +187,7 @@ function AddFilmModal({
         <div className={styles.modal__header}>
           <h1>Добавить фильмы</h1>
           <div className={styles.closeIcon} onClick={() => changeOpen(false)}>
-            <Icon icon="material-symbols:close-rounded" width="24" />
+            <MdClose size={24} />
           </div>
         </div>
 
@@ -214,7 +226,7 @@ function AddFilmModal({
               <div className={styles.searchStatus}>
                 {isLoading && (
                   <div className={styles.loadingIndicator}>
-                    <Icon icon="eos-icons:loading" width="18" />
+                    <MdRefresh size={18} className={styles.spin} />
                     <span>Поиск...</span>
                   </div>
                 )}
@@ -223,7 +235,7 @@ function AddFilmModal({
                   searchResults.length === 0 &&
                   !error && (
                     <div className={styles.noResults}>
-                      <Icon icon="mdi:information-outline" width="18" />
+                      <MdInfoOutline size={18} />
                       <span>Ничего не найдено</span>
                     </div>
                   )}
@@ -251,7 +263,7 @@ function AddFilmModal({
                           />
                         ) : (
                           <div className={styles.noPoster}>
-                            <Icon icon="mdi:movie-outline" width="32" />
+                            <MdMovieCreation size={32} />
                           </div>
                         )}
                       </div>
@@ -282,7 +294,7 @@ function AddFilmModal({
                         )}
                         className={styles.addButton}
                       >
-                        <Icon icon="mdi:plus" width="18" />
+                        <MdAdd size={18} />
                       </button>
                     </div>
                   ))}
@@ -304,9 +316,9 @@ function AddFilmModal({
                           alt={film.title}
                           className={styles.selectedPoster}
                         />
-                      ) : (
+                        ) : (
                         <div className={styles.selectedNoPoster}>
-                          <Icon icon="mdi:movie-outline" width="20" />
+                          <MdMovieCreation size={20} />
                         </div>
                       )}
                     </div>
@@ -320,7 +332,7 @@ function AddFilmModal({
                       onClick={() => removeFilmFromSelection(film.id)}
                       className={styles.removeButton}
                     >
-                      <Icon icon="mdi:close" width="16" />
+                      <MdClose size={16} />
                     </button>
                   </div>
                 ))}
@@ -337,13 +349,13 @@ function AddFilmModal({
           <div className={styles.footerHints}>
             {!pathname.startsWith("/member/") && !selectedUser && (
               <span className={styles.hintItem}>
-                <Icon icon="mdi:alert-circle-outline" width="14" />
+                <MdErrorOutline size={14} />
                 Выберите, кто добавляет
               </span>
             )}
             {selectedFilms.length === 0 && (
               <span className={styles.hintItem}>
-                <Icon icon="mdi:alert-circle-outline" width="14" />
+                <MdErrorOutline size={14} />
                 Добавьте хотя бы один фильм
               </span>
             )}

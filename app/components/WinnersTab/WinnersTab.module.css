@@ -26,6 +26,68 @@
   font-size: 0.95rem;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.backBtn {
+  flex-shrink: 0;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--foreground-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.backBtn:hover {
+  color: var(--foreground);
+  border-color: var(--accent-muted);
+  background: rgba(77, 184, 196, 0.08);
+}
+
+.headerIcon {
+  flex-shrink: 0;
+  color: #f5c842;
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--foreground);
+  flex: 1;
+}
+
+.calendarBtn {
+  flex-shrink: 0;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--foreground-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.calendarBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent-muted);
+  background: rgba(77, 184, 196, 0.08);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
