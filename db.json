@@ -1,69 +1,5 @@
 {
-  "films": [
-    {
-      "title": "Арт-лекторий: Мир Эндрю Уайета",
-      "from": "Андрей",
-      "year": 2018,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/1334443.jpg",
-      "engName": "andrey",
-      "id": "n2sxuzg85u",
-      "addedAt": "2026-06-08T19:51:02.118Z"
-    },
-    {
-      "title": "Танк 432",
-      "from": "Андрей",
-      "year": 2015,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/903061.jpg",
-      "engName": "andrey",
-      "id": "ai5hdcintt",
-      "addedAt": "2026-06-08T19:51:02.127Z"
-    },
-    {
-      "title": "Великая",
-      "from": "Андрей",
-      "year": 2020,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/666955.jpg",
-      "engName": "andrey",
-      "id": "d0srso30wb",
-      "addedAt": "2026-06-08T19:51:02.138Z"
-    },
-    {
-      "title": "Великий Гэтсби",
-      "from": "Андрей",
-      "year": 2013,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/463724.jpg",
-      "engName": "andrey",
-      "id": "w1wthwoc5u",
-      "addedAt": "2026-06-08T19:51:02.146Z"
-    },
-    {
-      "title": "Великолепный век",
-      "from": "Андрей",
-      "year": 2011,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/610422.jpg",
-      "engName": "andrey",
-      "id": "y3739f070k",
-      "addedAt": "2026-06-08T19:51:02.170Z"
-    },
-    {
-      "title": "Великая",
-      "from": "Андрей",
-      "year": 2015,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/780306.jpg",
-      "engName": "andrey",
-      "id": "mbcb4w8jjo",
-      "addedAt": "2026-06-08T19:51:02.183Z"
-    },
-    {
-      "title": "Великолепный век. Империя Кёсем",
-      "from": "Андрей",
-      "year": 2015,
-      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/926044.jpg",
-      "engName": "andrey",
-      "id": "8hj5o1qbm9",
-      "addedAt": "2026-06-08T19:51:02.196Z"
-    }
-  ],
+  "films": [],
   "winners": [
     {
       "film": {
@@ -77,6 +13,32 @@
       },
       "wonAt": "2026-06-08T19:51:14.013Z",
       "id": "4ufz38bz8k"
+    },
+    {
+      "film": {
+        "title": "Великая",
+        "from": "Андрей",
+        "year": 2020,
+        "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/666955.jpg",
+        "engName": "andrey",
+        "id": "d0srso30wb",
+        "addedAt": "2026-06-08T19:51:02.138Z"
+      },
+      "wonAt": "2026-06-12T16:31:06.169Z",
+      "id": "ot04rn9158"
+    },
+    {
+      "film": {
+        "title": "Великая",
+        "from": "Андрей",
+        "year": 2020,
+        "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/666955.jpg",
+        "engName": "andrey",
+        "id": "d0srso30wb",
+        "addedAt": "2026-06-08T19:51:02.138Z"
+      },
+      "wonAt": "2026-06-14T08:49:07.657Z",
+      "id": "g8makno4df"
     }
   ]
 }

@@ -174,10 +174,7 @@ function AddFilmModal({
   };
 
   return (
-    <div
-      className={styles.modalOverlay}
-      onClick={() => changeOpen(false)}
-    >
+    <div className={styles.modalOverlay}>
       <div
         ref={modalRef}
         className={styles.modal}
@@ -249,10 +246,7 @@ function AddFilmModal({
                 <h3>Результаты поиска:</h3>
                 <div className={styles.resultsList}>
                   {searchResults.map((movie) => (
-                    <div
-                      key={movie.id}
-                      className={styles.resultItem}
-                    >
+                    <div key={movie.id} className={styles.resultItem}>
                       <div className={styles.posterContainer}>
                         {movie.poster?.previewUrl || movie.poster?.url ? (
                           <img
@@ -316,7 +310,7 @@ function AddFilmModal({
                           alt={film.title}
                           className={styles.selectedPoster}
                         />
-                        ) : (
+                      ) : (
                         <div className={styles.selectedNoPoster}>
                           <MdMovieCreation size={20} />
                         </div>
