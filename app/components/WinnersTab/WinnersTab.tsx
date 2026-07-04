@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useWinners } from "../../hooks/useWinners";
 import CalendarModal from "../CalendarModal/CalendarModal";
 import styles from "./WinnersTab.module.css";
+import { motion } from "motion/react";
+import { cardReveal, curtainReveal, staggerContainer, tactile } from "../../lib/motion";
 
 function formatDate(iso: string): string {
   try {
@@ -53,7 +55,7 @@ export default function WinnersTab() {
 
   return (
     <>
-      <div className={styles.header}>
+      <motion.div className={styles.header} initial="hidden" animate="visible" variants={curtainReveal}>
         <button className={styles.backBtn} onClick={() => router.back()}>
           <MdOutlineChevronLeft size={22} />
         </button>
@@ -66,11 +68,11 @@ export default function WinnersTab() {
         >
           <MdOutlineCalendarMonth size={28} />
         </button>
-      </div>
+      </motion.div>
 
-      <div className={styles.grid}>
+      <motion.div className={styles.grid} initial="hidden" animate="visible" variants={staggerContainer(0.075)}>
         {winners.map((w) => (
-          <div
+          <motion.div
             key={w.id}
             className={styles.card}
             style={{
@@ -78,6 +80,8 @@ export default function WinnersTab() {
                 ? `url(${w.film.poster})`
                 : undefined,
             }}
+            variants={cardReveal}
+            {...tactile}
           >
             <div className={styles.cardOverlay} />
             <div className={styles.cardContent}>
@@ -91,9 +95,9 @@ export default function WinnersTab() {
               <div className={styles.cardFrom}>{w.film.from}</div>
               <div className={styles.cardDate}>{formatDate(w.wonAt)}</div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {calendarOpen && (
         <CalendarModal

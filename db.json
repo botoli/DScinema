@@ -1,44 +1,57 @@
 {
   "films": [],
   "winners": [
-    {
-      "film": {
-        "title": "Великий уравнитель",
-        "from": "Андрей",
-        "year": 2014,
-        "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/196707.jpg",
-        "engName": "andrey",
-        "id": "8dvrknoq3l",
-        "addedAt": "2026-06-08T19:51:02.155Z"
-      },
-      "wonAt": "2026-06-08T19:51:14.013Z",
-      "id": "4ufz38bz8k"
+  {
+    "film": {
+      "title": "Трансформеры: Начало",
+      "from": "Джебра",
+      "year": 2024,
+      "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4483445/fcfee1fa-940f-451f-944a-32d2f29f95ae/300x450",
+      "engName": "dzhebra",
+      "id": "mdp5mh6vdj",
+      "addedAt": "2026-06-07T20:13:08.304Z"
     },
-    {
-      "film": {
-        "title": "Великая",
-        "from": "Андрей",
-        "year": 2020,
-        "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/666955.jpg",
-        "engName": "andrey",
-        "id": "d0srso30wb",
-        "addedAt": "2026-06-08T19:51:02.138Z"
-      },
-      "wonAt": "2026-06-12T16:31:06.169Z",
-      "id": "ot04rn9158"
+    "wonAt": "2026-06-07T20:19:38.173Z",
+    "id": "qc43qwtbhc"
+  },
+  {
+    "film": {
+      "title": "Хокум",
+      "from": "Артём",
+      "year": 2026,
+      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/10359971.jpg",
+      "engName": "artem",
+      "id": "7v8b0brzk4",
+      "addedAt": "2026-06-12T20:12:53.669Z"
     },
-    {
-      "film": {
-        "title": "Великая",
-        "from": "Андрей",
-        "year": 2020,
-        "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/666955.jpg",
-        "engName": "andrey",
-        "id": "d0srso30wb",
-        "addedAt": "2026-06-08T19:51:02.138Z"
-      },
-      "wonAt": "2026-06-14T08:49:07.657Z",
-      "id": "g8makno4df"
-    }
-  ]
+    "wonAt": "2026-06-12T20:27:40.865Z",
+    "id": "l2woi5boo4"
+  },
+  {
+    "film": {
+      "title": "Трансформеры",
+      "from": "Миша",
+      "year": 2007,
+      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/81288.jpg",
+      "engName": "misha",
+      "id": "zncwcupmoo",
+      "addedAt": "2026-06-13T15:35:16.617Z"
+    },
+    "wonAt": "2026-06-23T16:47:45.608Z",
+    "id": "xb6o50ngeo"
+  },
+  {
+    "film": {
+      "title": "12 обезьян",
+      "from": "Джебра",
+      "year": 1995,
+      "poster": "https://kinopoiskapiunofficial.tech/images/posters/kp_small/502.jpg",
+      "engName": "dzhebra",
+      "id": "dxvhfnr1uc",
+      "addedAt": "2026-06-12T20:26:21.850Z"
+    },
+    "wonAt": "2026-07-03T21:10:30.808Z",
+    "id": "0ddn1bb8k5"
+  }
+]
 }

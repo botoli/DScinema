@@ -1,0 +1,19 @@
+.viewport{position:relative;height:350px;min-width:0;overflow:hidden;isolation:isolate;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.viewport:before,.viewport:after{content:"";position:absolute;z-index:40;top:0;bottom:0;width:13%;pointer-events:none}
+.viewport:before{left:0;background:linear-gradient(90deg,rgba(27,23,20,.96),transparent)}
+.viewport:after{right:0;background:linear-gradient(-90deg,rgba(27,23,20,.96),transparent)}
+.glow{position:absolute;z-index:0;left:50%;top:50%;width:260px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(240,106,67,.15),transparent 68%);filter:blur(20px);pointer-events:none}
+.card{position:absolute;left:50%;top:50%;width:160px;aspect-ratio:2/3;border:1px solid rgba(244,239,232,.14);border-radius:9px;overflow:hidden;background:linear-gradient(145deg,#302820,#171411);background-position:center;background-repeat:no-repeat;background-size:cover;box-shadow:0 16px 35px rgba(0,0,0,.42);opacity:var(--reel-opacity);z-index:var(--reel-z);transform:translate(calc(-50% + var(--reel-x)),-50%) scale(var(--reel-scale)) rotate(var(--reel-tilt));transform-origin:center;will-change:transform,opacity}
+.centered{border-color:var(--accent);opacity:1;box-shadow:0 0 0 1px rgba(240,106,67,.24),0 18px 42px rgba(0,0,0,.52),0 0 26px rgba(240,106,67,.18)}
+.centered:before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,202,157,.12);pointer-events:none}
+.cardShade{position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(15,12,10,.96))}
+.cardInfo{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:15px 12px;opacity:0;transform:translateY(6px);transition:opacity .18s,transform .18s}
+.centered .cardInfo{opacity:1;transform:none}
+.cardInfo strong{display:block;font:400 13px/1.2 var(--font-display);text-shadow:0 1px 4px #000}
+.cardInfo span{display:block;margin-top:6px;color:#d8cec4;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;font:46px var(--font-display);color:var(--foreground-muted)}
+.compact{height:300px}
+.compact .card{width:136px}
+@media(max-width:720px){.viewport{height:305px}.card{width:138px}.compact{height:275px}.compact .card{width:122px}}
+@media(max-width:460px){.viewport{height:270px}.card{width:118px}.compact{height:250px}.compact .card{width:108px}.cardInfo{padding:11px 9px}.cardInfo strong{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.card,.cardInfo{transition:none}}

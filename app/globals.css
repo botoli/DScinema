@@ -1,16 +1,18 @@
 :root {
-  --bg: #0a1214;
-  --surface: #0f181b;
-  --surface-raised: #162226;
-  --foreground: #ddf2f5;
-  --foreground-muted: #7a9ca3;
-  --border: #1a2e33;
-  --border-light: #122226;
-  --accent: #4db8c4;
-  --accent-muted: #368e99;
-  --danger: #d65c7c;
-  --danger-bg: rgba(214, 92, 124, 0.12);
-  --radius: 8px;
+  --bg: #0f0901;
+  --surface: #211c18;
+  --surface-raised: #29231e;
+  --foreground: #f4efe8;
+  --foreground-muted: #a79d91;
+  --border: rgba(244, 239, 232, 0.12);
+  --border-light: rgba(244, 239, 232, 0.07);
+  --accent: #f06a43;
+  --accent-muted: #b8c98a;
+  --danger: #e47c66;
+  --danger-bg: rgba(240, 106, 67, 0.12);
+  --radius: 12px;
+  --font-ui: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-onest), Arial, Helvetica, sans-serif;
 }
 
 *,
@@ -23,11 +25,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--foreground);
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-ui);
+  background-image: radial-gradient(circle at 70% -10%, rgba(184, 201, 138, 0.05), transparent 32%);
 }
 
 a {
@@ -41,4 +40,5 @@ a {
 }
 
 button {
+  font: inherit;
 }

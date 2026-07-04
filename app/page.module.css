@@ -1,4 +1,6 @@
 .page {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,51 +11,61 @@
   color: var(--foreground);
 }
 
-/* ---- Animations ---- */
-
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.page::before {
+  content: "";
+  position: fixed;
+  left: var(--beam-x, 50vw);
+  top: var(--beam-y, 104px);
+  width: var(--beam-length, 60vw);
+  height: clamp(220px, 42vw, 620px);
+  z-index: 0;
+  pointer-events: none;
+  background: conic-gradient(
+    from 76deg at 0 50%,
+    transparent 0deg,
+    rgba(210, 91, 63, .025) 3deg,
+    rgba(255, 205, 174, .14) 10deg,
+    rgba(255, 240, 215, .2) 14deg,
+    rgba(255, 205, 174, .14) 18deg,
+    rgba(210, 91, 63, .025) 25deg,
+    transparent 28deg
+  );
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .82) 48%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .82) 48%, transparent 100%);
+  transform: translateY(-50%) rotate(var(--beam-angle, .7rad));
+  transform-origin: 0 50%;
+  /* filter: blur(0%); */
+  mix-blend-mode: screen;
+  opacity: .82;
 }
 
-@keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.page::after {
+  content: "";
+  position: fixed;
+  left: var(--beam-x, 50vw);
+  top: var(--beam-y, 104px);
+  width: var(--beam-length, 60vw);
+  height: clamp(240px, 46vw, 680px);
+  z-index: 0;
+  pointer-events: none;
+  background: conic-gradient(
+    from 72deg at 0 50%,
+    transparent 0deg,
+    rgba(240, 148, 108, .035) 5deg,
+    rgba(255, 229, 194, .075) 18deg,
+    rgba(240, 148, 108, .035) 31deg,
+    transparent 36deg
+  );
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .65) 52%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .65) 52%, transparent 100%);
+  transform: translateY(-50%) rotate(var(--beam-angle, .7rad));
+  transform-origin: 0 50%;
+  /* filter: blur(px); */
+  mix-blend-mode: screen;
+  opacity: .3;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(-60px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.page > * { position: relative; z-index: 1; }
 
 .hero {
   display: flex;
@@ -69,13 +81,12 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  animation: fadeIn 0.25s ease forwards;
-  opacity: 0;
 }
 
 .logo {
   width: 80px;
   height: 80px;
+  filter: drop-shadow(0 16px 28px rgba(240, 106, 67, .2));
 }
 
 .brand {
@@ -114,13 +125,14 @@
 }
 
 .card {
+  position: relative;
+  transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 16px;
   padding: 36px 28px;
-  background: rgba(15, 24, 27, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
@@ -133,6 +145,7 @@
 
 .card:hover {
   border-color: var(--accent-muted);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .28), inset 0 1px rgba(255,255,255,.04);
 }
 
 .cardIcon {
@@ -145,16 +158,8 @@
   border-radius: 14px;
   color: var(--accent);
 }
-.card:first-child {
-  animation: fadeInLeft 0.2s ease forwards;
-  animation-delay: 0.25s;
-  opacity: 0;
-}
-.card:last-child {
-  animation: fadeInRight 0.25s ease forwards;
-  animation-delay: 0.35s;
-  opacity: 0;
-}
+.card:hover .cardIcon { transform: translateY(-3px) rotate(-4deg); box-shadow: 0 12px 28px rgba(240,106,67,.16); }
+.cardIcon { transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
 .cardTitle {
   margin: 0;
   font-size: 1.2rem;
@@ -220,7 +225,6 @@
 
 .cardButton:hover {
   border-color: var(--accent-muted);
-  background: rgba(77, 184, 196, 0.06);
 }
 
 /* ---- Current session chip ---- */
@@ -238,7 +242,7 @@
   padding: 10px 20px;
   border: 1px solid var(--accent-muted);
   border-radius: 10px;
-  background: rgba(77, 184, 196, 0.08);
+  background: var(--surface);
   color: var(--accent);
   font-size: 0.9rem;
   font-weight: 600;
@@ -250,7 +254,7 @@
 }
 
 .profileChip:hover {
-  background: rgba(77, 184, 196, 0.15);
+  background: var(--surface-raised);
 }
 
 /* ---- User grid ---- */
@@ -328,13 +332,9 @@
   gap: 0;
   width: min(900px, 100%);
   padding: 16px 24px;
-  background: rgba(15, 24, 27, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  animation: fadeInUp 0.2s ease forwards;
-  animation-delay: 0.15s;
-  opacity: 0;
 }
 
 .statsBarItem {
@@ -367,15 +367,6 @@
 
 /* ---- Skeleton ---- */
 
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-}
-
 .skeleton {
   display: inline-block;
   border-radius: 6px;
@@ -386,7 +377,6 @@
     rgba(255, 255, 255, 0.04) 75%
   );
   background-size: 200px 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
   color: transparent;
 }
 
@@ -427,4 +417,16 @@
   .userBtn {
     padding: 12px 8px;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page::before, .page::after { display: none; }
+  .cardIcon { transition: none; }
+}
+
+@media (hover: none) {
+  .page::before {
+    display: none;
+  }
+  .page::after { display: none; }
 }

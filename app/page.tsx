@@ -13,10 +13,13 @@ import {
 } from "react-icons/md";
 import styles from "./page.module.css";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAllFilms } from "./hooks/useFilms";
 import { useWinners } from "./hooks/useWinners";
+import { useMouseGlow } from "./hooks/useMouseGlow";
+import { motion } from "motion/react";
+import { cardReveal, cinemaEase, curtainReveal, staggerContainer, tactile } from "./lib/motion";
 
 const USERS = [
   { id: "dzhebra", name: "Джебра" },
@@ -35,6 +38,8 @@ function formatDate(iso: string) {
 }
 
 export default function Home() {
+  const logoRef = useRef<HTMLImageElement>(null);
+  useMouseGlow(logoRef);
   const [me, setMe] = useState("");
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -72,19 +77,19 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.brandGroup}>
-          <img src="/favicon.png" alt="" className={styles.logo} />
+      <motion.section className={styles.hero} initial="hidden" animate="visible" variants={staggerContainer(0.12)}>
+        <motion.div className={styles.brandGroup} variants={curtainReveal}>
+          <motion.img ref={logoRef} src="/favicon.png" alt="" className={styles.logo} initial={{ scale: 0.7, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.1 }} />
           <span className={styles.brand}>
             <span className={styles.brandDs}>DS</span>
             <span className={styles.brandDot}>•</span>
             <span className={styles.brandCinema}>cinema</span>
           </span>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      <div className={styles.statsBar}>
-        <div className={styles.statsBarItem}>
+      <motion.div className={styles.statsBar} initial="hidden" animate="visible" variants={staggerContainer(0.09)}>
+        <motion.div className={styles.statsBarItem} variants={cardReveal}>
           {loading ? (
             <span className={`${styles.statsBarNum} ${styles.skeleton}`}>
               &nbsp;&nbsp;&nbsp;
@@ -93,9 +98,9 @@ export default function Home() {
             <span className={styles.statsBarNum}>{totalRoulettes}</span>
           )}
           <span className={styles.statsBarLabel}>рулеток</span>
-        </div>
+        </motion.div>
         <div className={styles.statsBarDivider} />
-        <div className={styles.statsBarItem}>
+        <motion.div className={styles.statsBarItem} variants={cardReveal}>
           {loading ? (
             <span className={`${styles.statsBarNum} ${styles.skeleton}`}>
               &nbsp;&nbsp;&nbsp;
@@ -104,9 +109,9 @@ export default function Home() {
             <span className={styles.statsBarNum}>{watchedFilms}</span>
           )}
           <span className={styles.statsBarLabel}>фильмов посмотрено</span>
-        </div>
+        </motion.div>
         <div className={styles.statsBarDivider} />
-        <div className={styles.statsBarItem}>
+        <motion.div className={styles.statsBarItem} variants={cardReveal}>
           <span className={styles.statsBarLabel}>Последний:</span>
           {loading ? (
             <span className={`${styles.statsBarFilm} ${styles.skeleton}`}>
@@ -117,11 +122,11 @@ export default function Home() {
               {lastWinner?.film?.title || "—"}
             </span>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className={styles.contentGrid}>
-        <div className={styles.card}>
+      <motion.div className={styles.contentGrid} initial="hidden" animate="visible" variants={staggerContainer(0.14)}>
+        <motion.div className={styles.card} variants={cardReveal} {...tactile}>
           <div className={styles.cardIcon}>
             <MdGroups size={28} />
           </div>
@@ -147,11 +152,13 @@ export default function Home() {
             {USERS.map((user) => {
               const count = filmCounts[user.name] ?? 0;
               return (
-                <button
+                <motion.button
                   key={user.id}
                   className={`${styles.userBtn} ${me === user.id ? styles.userBtnActive : ""}`}
                   onClick={() => handleLogin(user.id)}
                   disabled={loading}
+                  whileHover={{ y: -4, borderColor: "var(--accent)", transition: { type: "spring", stiffness: 420, damping: 24 } }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   <span className={styles.userName}>{user.name}</span>
                   <span className={styles.userStatus}>
@@ -171,7 +178,7 @@ export default function Home() {
                       </>
                     )}
                   </span>
-                </button>
+                </motion.button>
               );
             })}
           </div>
@@ -182,8 +189,8 @@ export default function Home() {
               Выйти
             </button>
           )}
-        </div>
-        <div className={styles.card}>
+        </motion.div>
+        <motion.div className={styles.card} variants={cardReveal} {...tactile} transition={{ duration: 0.65, ease: cinemaEase }}>
           <div className={styles.cardIcon}>
             <MdLocalMovies size={28} />
           </div>
@@ -208,8 +215,8 @@ export default function Home() {
           <Link href="/host" className={styles.cardButton}>
             Открыть панель
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

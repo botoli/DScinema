@@ -11,6 +11,7 @@ import {
   MdRefresh,
 } from "react-icons/md";
 import styles from "./CalendarModal.module.css";
+import { motion } from "motion/react";
 
 interface Winner {
   id: string;
@@ -238,7 +239,9 @@ export default function CalendarModal({ winners, onClose }: CalendarModalProps) 
                 <div className={styles.detailDescription}>
                   {detail.loading ? (
                     <div className={styles.detailLoading}>
-                      <MdRefresh size={20} className={styles.spin} />
+                      <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                        <MdRefresh size={20} />
+                      </motion.span>
                       <span>Загрузка описания...</span>
                     </div>
                   ) : detail.description ? (

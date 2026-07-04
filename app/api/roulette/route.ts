@@ -5,20 +5,13 @@ import {
   eliminateFilm,
   finishRoulette,
   resetRoulette,
+  emptyRouletteState,
 } from "@/app/lib/roulette-db";
 
 export async function GET() {
   try {
     const state = await getRouletteState();
-    return NextResponse.json(
-      state ?? {
-        active: false,
-        eliminatedIds: [],
-        winner: null,
-        filmIds: [],
-        wonAt: undefined,
-      },
-    );
+    return NextResponse.json({ ...(state ?? emptyRouletteState()), serverTime: Date.now() });
   } catch (error) {
     console.error("Error fetching roulette state:", error);
     return NextResponse.json(
@@ -33,18 +26,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action } = body;
 
+    let state;
     switch (action) {
       case "start":
-        await startRoulette(body.filmIds);
+        state = await startRoulette(body.filmIds);
         break;
       case "eliminate":
         await eliminateFilm(body.filmId);
+        state = await getRouletteState();
         break;
       case "finish":
-        await finishRoulette(body.winner, body.wonAt);
+        state = await finishRoulette(body.winner);
         break;
       case "reset":
         await resetRoulette();
+        state = emptyRouletteState();
         break;
       default:
         return NextResponse.json(
@@ -53,7 +49,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ ...(state ?? emptyRouletteState()), serverTime: Date.now() });
   } catch (error) {
     console.error("Error handling roulette action:", error);
     return NextResponse.json(

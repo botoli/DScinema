@@ -61,3 +61,18 @@ export function useDeleteFilm() {
     },
   });
 }
+
+export function useUpdateFilm() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, film }: { id: string; film: Partial<Film> }) =>
+      api.updateFilm(id, film),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: filmKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: filmKeys.detail(variables.id),
+      });
+    },
+  });
+}

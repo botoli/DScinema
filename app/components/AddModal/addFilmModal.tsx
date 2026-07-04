@@ -11,6 +11,7 @@ import {
   MdRefresh,
 } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 
 interface Film {
   id: string;
@@ -174,11 +175,14 @@ function AddFilmModal({
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div
+    <motion.div className={styles.modalOverlay} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => changeOpen(false)}>
+      <motion.div
         ref={modalRef}
         className={styles.modal}
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, y: 24, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 14, scale: 0.98 }}
       >
         {/* весь остальной контент без изменений */}
         <div className={styles.modal__header}>
@@ -223,7 +227,9 @@ function AddFilmModal({
               <div className={styles.searchStatus}>
                 {isLoading && (
                   <div className={styles.loadingIndicator}>
-                    <MdRefresh size={18} className={styles.spin} />
+                    <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                      <MdRefresh size={18} />
+                    </motion.span>
                     <span>Поиск...</span>
                   </div>
                 )}
@@ -241,8 +247,9 @@ function AddFilmModal({
 
             {error && <div className={styles.error}>{error}</div>}
 
+            <AnimatePresence>
             {searchResults.length > 0 && (
-              <div className={styles.searchResults}>
+              <motion.div className={styles.searchResults} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
                 <h3>Результаты поиска:</h3>
                 <div className={styles.resultsList}>
                   {searchResults.map((movie) => (
@@ -293,8 +300,9 @@ function AddFilmModal({
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
+            </AnimatePresence>
           </div>
 
           {selectedFilms.length > 0 ? (
@@ -373,8 +381,8 @@ function AddFilmModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

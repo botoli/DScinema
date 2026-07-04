@@ -22,6 +22,12 @@ export interface RouletteState {
   eliminatedIds: string[];
   winner: Film | null;
   filmIds: string[];
+  reelFilmIds: string[];
+  winnerId?: string;
+  targetPosition?: number;
+  startedAt?: number;
+  duration?: number;
+  serverTime?: number;
   wonAt?: number;
 }
 
@@ -152,12 +158,14 @@ export const api = {
     return response.json();
   },
 
-  async startRoulette(filmIds: string[]): Promise<void> {
-    await fetch(`${API_URL}/roulette`, {
+  async startRoulette(filmIds: string[]): Promise<RouletteState> {
+    const response = await fetch(`${API_URL}/roulette`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "start", filmIds }),
     });
+    if (!response.ok) throw new Error("Failed to start roulette");
+    return response.json();
   },
 
   async eliminateFilm(filmId: string): Promise<void> {
@@ -168,12 +176,14 @@ export const api = {
     });
   },
 
-  async finishRoulette(winner: Film, wonAt?: number): Promise<void> {
-    await fetch(`${API_URL}/roulette`, {
+  async finishRoulette(winner: Film): Promise<RouletteState> {
+    const response = await fetch(`${API_URL}/roulette`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "finish", winner, wonAt }),
+      body: JSON.stringify({ action: "finish", winner }),
     });
+    if (!response.ok) throw new Error("Failed to finish roulette");
+    return response.json();
   },
 
   async resetRoulette(): Promise<void> {
