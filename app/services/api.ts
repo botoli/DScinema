@@ -9,6 +9,7 @@ export interface Film {
   poster?: string;
   engName?: string;
   addedAt?: string;
+  hidden?: boolean;
 }
 
 export interface MovieSearchResult {
@@ -119,7 +120,10 @@ export const api = {
       },
       body: JSON.stringify(film),
     });
-    if (!response.ok) throw new Error("Failed to update film");
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || "Не удалось обновить фильм");
+    }
     return response.json();
   },
 
@@ -186,7 +190,10 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "start", filmIds }),
     });
-    if (!response.ok) throw new Error("Failed to start roulette");
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || "Не удалось запустить рулетку");
+    }
     return response.json();
   },
 

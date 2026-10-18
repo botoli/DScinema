@@ -31,7 +31,10 @@ export async function getRouletteState(): Promise<RouletteStateData | null> {
 }
 
 export async function startRoulette(filmIds: string[]): Promise<RouletteStateData> {
-  if (filmIds.length < 2) throw new Error("At least two films are required");
+  const films = (await kv.get<Film[]>("films")) ?? [];
+  const availableIds = new Set(films.filter((film) => !film.hidden).map((film) => film.id));
+  filmIds = [...new Set(filmIds)].filter((id) => availableIds.has(id));
+  if (filmIds.length < 2) throw new RouletteInputError("Для рулетки нужны хотя бы два нескрытых фильма");
 
   const { winnerId, targetPosition, reelFilmIds } = createRouletteScenario(filmIds);
   const state: RouletteStateData = {
@@ -49,6 +52,8 @@ export async function startRoulette(filmIds: string[]): Promise<RouletteStateDat
   await kv.set(ROULETTE_KEY, state);
   return state;
 }
+
+export class RouletteInputError extends Error {}
 
 export async function eliminateFilm(filmId: string): Promise<void> {
   const state = await getRouletteState();

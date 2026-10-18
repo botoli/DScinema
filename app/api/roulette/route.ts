@@ -6,6 +6,7 @@ import {
   finishRoulette,
   resetRoulette,
   emptyRouletteState,
+  RouletteInputError,
 } from "@/app/lib/roulette-db";
 
 export async function GET() {
@@ -29,6 +30,9 @@ export async function POST(request: NextRequest) {
     let state;
     switch (action) {
       case "start":
+        if (!Array.isArray(body.filmIds) || !body.filmIds.every((id: unknown) => typeof id === "string")) {
+          return NextResponse.json({ error: "Укажите список фильмов для рулетки" }, { status: 400 });
+        }
         state = await startRoulette(body.filmIds);
         break;
       case "eliminate":
@@ -51,6 +55,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ ...(state ?? emptyRouletteState()), serverTime: Date.now() });
   } catch (error) {
+    if (error instanceof RouletteInputError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error("Error handling roulette action:", error);
     return NextResponse.json(
       { error: "Failed to handle roulette action" },

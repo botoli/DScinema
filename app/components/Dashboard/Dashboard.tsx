@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MdAdd, MdCheck, MdDelete, MdEdit, MdInfoOutline, MdLogout, MdOutlineEmojiEvents, MdRefresh, MdSync } from "react-icons/md";
+import { MdAdd, MdCheck, MdDelete, MdEdit, MdInfoOutline, MdLogout, MdOutlineEmojiEvents, MdRefresh, MdSync, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAllFilms, useFilmsByUser, useAddFilms, useDeleteFilm, useUpdateFilm } from "../../hooks/useFilms";
 import { usePatchNotes } from "../../hooks/usePatchNotes";
 import { useRouletteState } from "../../hooks/useRoulette";
@@ -33,6 +33,8 @@ function FilmTile({
   film,
   onDelete,
   onEdit,
+  onToggleHidden,
+  visibilityDisabled,
   confirming,
   deleting,
   noTactile,
@@ -40,6 +42,8 @@ function FilmTile({
   film: Film;
   onDelete?: () => void;
   onEdit?: () => void;
+  onToggleHidden?: () => void;
+  visibilityDisabled?: boolean;
   confirming?: boolean;
   deleting?: boolean;
   noTactile?: boolean;
@@ -53,6 +57,11 @@ function FilmTile({
         {!film.poster && <span>{film.title.slice(0, 1)}</span>}
       </div>
       <div className={styles.cardActions}>
+        {onToggleHidden && (
+          <button className={styles.visibilityButton} onClick={onToggleHidden} disabled={visibilityDisabled} title={visibilityDisabled ? "Дождитесь завершения текущей операции или рулетки" : film.hidden ? "Вернуть в очередь" : "Скрыть из очереди"} aria-label={`${film.hidden ? "Вернуть в очередь" : "Скрыть"} ${film.title}`}>
+            {film.hidden ? <MdVisibility /> : <MdVisibilityOff />}
+          </button>
+        )}
         {onEdit && (
           <button className={styles.editButton} onClick={onEdit} aria-label={`Редактировать ${film.title}`}>
             <MdEdit />
@@ -65,6 +74,7 @@ function FilmTile({
         )}
       </div>
       <div className={styles.filmInfo}>
+        {film.hidden && <span className={styles.hiddenLabel}>Скрыт · вне рулетки</span>}
         <strong>{film.title}</strong>
         <span>{film.year || "Год не указан"}</span>
         <small><i style={{ background: owner?.color }} />{owner?.name ?? film.from}</small>
@@ -84,6 +94,7 @@ export default function Dashboard({ variant, defaultShowWinners }: DashboardProp
   const [patchOpen, setPatchOpen] = useState(false);
   const [memberTimeLeft, setMemberTimeLeft] = useState(120);
   const [filmFilter, setFilmFilter] = useState("all");
+  const [showHidden, setShowHidden] = useState(false);
   const addRef = useRef<HTMLButtonElement>(null);
   const memberRemoving = useRef(false);
   const router = useRouter();
@@ -102,8 +113,9 @@ export default function Dashboard({ variant, defaultShowWinners }: DashboardProp
   const addMutation = useAddFilms();
   const deleteMutation = useDeleteFilm();
   const updateMutation = useUpdateFilm();
+  const visibilityMutation = useUpdateFilm();
   const allFilms = allQuery.data ?? [];
-  const films = isMember ? (mineQuery.data ?? []) : allFilms;
+  const rouletteFilms = allFilms.filter((film) => !film.hidden);
   const loading = allQuery.isPending || (isMember && !!me && mineQuery.isPending);
   const rouletteData = rouletteQuery.data;
   const winner = rouletteData?.winner;
@@ -148,7 +160,12 @@ export default function Dashboard({ variant, defaultShowWinners }: DashboardProp
   const groups = USERS.map((user) => ({ ...user, films: allFilms.filter((film) => film.from === user.name || film.engName === user.id) }));
   const today = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
   const activeFilter = isMember ? me : filmFilter;
-  const collectionFilms = activeFilter === "all" ? allFilms : (groups.find((group) => group.id === activeFilter)?.films ?? []);
+  const authorFilms = activeFilter === "all" ? allFilms : (groups.find((group) => group.id === activeFilter)?.films ?? []);
+  const collectionFilms = authorFilms.filter((film) => Boolean(film.hidden) === showHidden);
+  const toggleHidden = (film: Film) => {
+    setConfirmingId(null);
+    visibilityMutation.mutate({ id: film.id, film: { hidden: !film.hidden } });
+  };
   const activeCurator = groups.find((group) => group.id === activeFilter);
   const openAddModal = () => {
     setButtonRect(addRef.current?.getBoundingClientRect() ?? null);
@@ -175,7 +192,7 @@ export default function Dashboard({ variant, defaultShowWinners }: DashboardProp
       <div className={isMember ? styles.memberContent : undefined}>
       <section className={`${styles.editorialSection} ${styles.rouletteSection} ${isMember ? styles.memberRouletteSection : ""}`}>
         {!isMember && <div className={styles.step}><b>01</b><span>Выбор вечера</span></div>}
-        <div className={styles.sectionBody}>{isMember ? <MemberRoulette films={allFilms} state={rouletteData} time={memberTimeLeft} remove={() => winner && removeWinnerNow(winner)} /> : <Roulette films={films} rouletteState={rouletteData} contributions={groups.map(({ name, films: userFilms }) => ({ name, count: userFilms.length }))} />}</div>
+        <div className={styles.sectionBody}>{isMember ? <MemberRoulette films={rouletteFilms} state={rouletteData} time={memberTimeLeft} remove={() => winner && removeWinnerNow(winner)} /> : <Roulette films={rouletteFilms} rouletteState={rouletteData} contributions={groups.map(({ name, films: userFilms }) => ({ name, count: userFilms.filter((film) => !film.hidden).length }))} />}</div>
       </section>
 
       <section className={`${styles.editorialSection} ${isMember ? styles.memberCollection : ""}`}>
@@ -183,7 +200,12 @@ export default function Dashboard({ variant, defaultShowWinners }: DashboardProp
         <div className={styles.sectionBody}>
           <div className={styles.collectionTop}><div><span className={styles.eyebrow}>{isMember ? "Ваша подборка" : "Общая коллекция"}</span><h2>{activeCurator ? `${activeCurator.name} рекомендует` : "Фильмы в очереди"}</h2></div><div className={styles.collectionActions}><p>{loading ? "Обновляем коллекцию…" : `${collectionFilms.length} вариантов`}</p>{isMember && <button onClick={openAddModal} className={styles.collectionAdd}><MdAdd /> Добавить фильм</button>}</div></div>
           {!isMember && <div className={styles.filters} role="group" aria-label="Фильтр по автору"><button className={filmFilter === "all" ? styles.activeFilter : ""} onClick={() => setFilmFilter("all")}>Все фильмы <span>· {allFilms.length}</span></button>{groups.map((group) => <button key={group.id} className={filmFilter === group.id ? styles.activeFilter : ""} onClick={() => setFilmFilter(group.id)}><i style={{ background: group.color }} />{group.name} <span>· {group.films.length}</span></button>)}</div>}
-          <motion.div layout className={`${styles.filmGrid} ${isMember ? styles.memberFilmGrid : ""}`}><AnimatePresence mode="popLayout" initial={false}>{collectionFilms.length ? collectionFilms.map((film) => <FilmTile key={`${film.id}:${film.title}:${film.year ?? ""}:${film.poster ?? ""}:${film.from}:${film.engName ?? ""}`} film={film} confirming={confirmingId === film.id} deleting={confirmingId === film.id && deleteMutation.isPending} onDelete={() => requestDelete(film.id)} onEdit={() => setEditingFilm(film)} noTactile />) : <motion.p key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.empty}>В этой подборке пока нет фильмов</motion.p>}</AnimatePresence></motion.div>
+          <div className={styles.filters} role="group" aria-label="Видимость фильмов">
+            <button className={!showHidden ? styles.activeFilter : ""} aria-pressed={!showHidden} onClick={() => setShowHidden(false)}>В очереди · {authorFilms.filter((film) => !film.hidden).length}</button>
+            <button className={showHidden ? styles.activeFilter : ""} aria-pressed={showHidden} onClick={() => setShowHidden(true)}><MdVisibilityOff /> Скрытые · {authorFilms.filter((film) => film.hidden).length}</button>
+          </div>
+          {visibilityMutation.isError && <p className={styles.actionError} role="alert">{visibilityMutation.error.message}</p>}
+          <motion.div layout className={`${styles.filmGrid} ${isMember ? styles.memberFilmGrid : ""}`}><AnimatePresence mode="popLayout" initial={false}>{collectionFilms.length ? collectionFilms.map((film) => <FilmTile key={`${film.id}:${film.title}:${film.year ?? ""}:${film.poster ?? ""}:${film.from}:${film.engName ?? ""}`} film={film} confirming={confirmingId === film.id} deleting={confirmingId === film.id && deleteMutation.isPending} onDelete={() => requestDelete(film.id)} onEdit={() => setEditingFilm(film)} onToggleHidden={() => toggleHidden(film)} visibilityDisabled={visibilityMutation.isPending || Boolean(rouletteData?.active && rouletteData.filmIds.includes(film.id))} noTactile />) : <motion.p key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.empty}>{showHidden ? "В этой подборке нет скрытых фильмов" : "В этой подборке пока нет фильмов в очереди"}</motion.p>}</AnimatePresence></motion.div>
         </div>
       </section>
       </div>

@@ -22,6 +22,7 @@ const COUNTDOWN = 120;
 export default function Roulette({ films, contributions, rouletteState, onHistoryChange }: RouletteProps) {
   const queryClient = useQueryClient();
   const [timeLeft, setTimeLeft] = useState(COUNTDOWN);
+  const [startError, setStartError] = useState<string | null>(null);
   const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const finishingRef = useRef(false);
   const removingRef = useRef(false);
@@ -105,6 +106,7 @@ export default function Roulette({ films, contributions, rouletteState, onHistor
 
   const startRoulette = async () => {
     if (films.length <= 1 || isRunning) return;
+    setStartError(null);
     clearFinishTimer();
     finishingRef.current = false;
     try {
@@ -112,6 +114,7 @@ export default function Roulette({ films, contributions, rouletteState, onHistor
       queryClient.setQueryData(["roulette"], nextState);
     } catch (error) {
       console.error("Ошибка запуска рулетки:", error);
+      setStartError(error instanceof Error ? error.message : "Не удалось запустить рулетку");
     }
   };
 
@@ -133,6 +136,7 @@ export default function Roulette({ films, contributions, rouletteState, onHistor
             <button className={styles.rouletteButton} onClick={startRoulette} disabled={isRunning || !!winner || films.length <= 1}><MdPlayArrow size={20} />Запустить выбор</button>
             <button className={styles.rouletteButtonSecondary} onClick={() => void resetRoulette()} disabled={isRunning}><MdRestartAlt size={20} />Перезапустить</button>
           </div>
+          {startError && <p role="alert">{startError}</p>}
         </div>
 
         <RouletteReel films={films} state={rouletteState} />

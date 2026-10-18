@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/app/lib/kv";
+import type { Film } from "@/app/services/api";
+import { getRouletteState } from "@/app/lib/roulette-db";
 
 const FILMS_KEY = "films";
 
@@ -10,7 +12,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const films = (await kv.get<any[]>(FILMS_KEY)) || [];
+    const films = (await kv.get<Film[]>(FILMS_KEY)) || [];
     const film = films.find((f) => f.id === id);
 
     if (!film) {
@@ -35,11 +37,21 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const films = (await kv.get<any[]>(FILMS_KEY)) || [];
+    if ("hidden" in body && typeof body.hidden !== "boolean") {
+      return NextResponse.json({ error: "Поле hidden должно быть логическим значением" }, { status: 400 });
+    }
+    const films = (await kv.get<Film[]>(FILMS_KEY)) || [];
 
     const index = films.findIndex((f) => f.id === id);
     if (index === -1) {
       return NextResponse.json({ error: "Film not found" }, { status: 404 });
+    }
+
+    if (body.hidden === true) {
+      const roulette = await getRouletteState();
+      if (roulette?.active && roulette.filmIds.includes(id)) {
+        return NextResponse.json({ error: "Дождитесь завершения рулетки, чтобы скрыть этот фильм" }, { status: 409 });
+      }
     }
 
     films[index] = { ...films[index], ...body };
@@ -62,7 +74,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const films = (await kv.get<any[]>(FILMS_KEY)) || [];
+    const films = (await kv.get<Film[]>(FILMS_KEY)) || [];
 
     const index = films.findIndex((f) => f.id === id);
     if (index === -1) {
