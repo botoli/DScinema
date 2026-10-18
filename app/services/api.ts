@@ -11,6 +11,17 @@ export interface Film {
   addedAt?: string;
 }
 
+export interface MovieSearchResult {
+  id: string | number;
+  name?: string;
+  alternativeName?: string;
+  enName?: string;
+  year?: number;
+  rating?: { kp?: number };
+  countries?: Array<{ name: string }>;
+  poster?: { previewUrl?: string; url?: string };
+}
+
 export interface Winner {
   id: string;
   film: Film;
@@ -38,6 +49,17 @@ export interface PatchNote {
 }
 
 export const api = {
+  async searchMovies(query: string, signal?: AbortSignal): Promise<{ docs: MovieSearchResult[] }> {
+    const response = await fetch(
+      `${API_URL}/search-movie?query=${encodeURIComponent(query)}&page=1&limit=10`,
+      { signal },
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Ошибка при поиске фильмов");
+    }
+    return data;
+  },
   // Получить все фильмы
   async getFilms(): Promise<Film[]> {
     const response = await fetch(`${API_URL}/films`);

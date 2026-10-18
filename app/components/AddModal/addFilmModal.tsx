@@ -12,6 +12,7 @@ import {
 } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { api } from "../../services/api";
 
 interface Film {
   id: string;
@@ -63,8 +64,6 @@ function AddFilmModal({
     { id: "misha", name: "Миша" },
   ];
 
-  const API_KEY = process.env.NEXT_PUBLIC_KINOPOISK_API_KEY;
-
   const searchFilm = async (query: string) => {
     if (!query.trim() || query.length < 2) {
       setSearchResults([]);
@@ -82,21 +81,7 @@ function AddFilmModal({
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/search-movie?query=${encodeURIComponent(query)}&page=1&limit=10`,
-        {
-          headers: {
-            "X-API-KEY": API_KEY || "",
-          },
-          signal: abortController.signal,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Ошибка при поиске фильмов");
-      }
-
-      const data = await response.json();
+      const data = await api.searchMovies(query, abortController.signal);
       setSearchResults(data.docs || []);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {

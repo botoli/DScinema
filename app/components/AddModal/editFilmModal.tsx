@@ -11,7 +11,7 @@ import {
   MdMovieCreation,
   MdRefresh,
 } from "react-icons/md";
-import type { Film } from "../../services/api";
+import { api, type Film } from "../../services/api";
 import styles from "./addFilmModal.module.css";
 
 type SearchMovie = {
@@ -75,8 +75,6 @@ export default function EditFilmModal({
     engName: film.engName || initialUser,
   });
 
-  const API_KEY = process.env.NEXT_PUBLIC_KINOPOISK_API_KEY;
-
   const searchFilm = useEffectEvent(async (query: string) => {
     if (!query.trim() || query.length < 2) {
       setSearchResults([]);
@@ -91,19 +89,7 @@ export default function EditFilmModal({
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/search-movie?query=${encodeURIComponent(query)}&page=1&limit=10`,
-        {
-          headers: { "X-API-KEY": API_KEY || "" },
-          signal: abortController.signal,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Ошибка при поиске фильмов");
-      }
-
-      const data: { docs?: SearchMovie[] } = await response.json();
+      const data = await api.searchMovies(query, abortController.signal);
       setSearchResults(data.docs || []);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
