@@ -82,15 +82,19 @@ function AddFilmModal({
 
     try {
       const data = await api.searchMovies(query, abortController.signal);
+      if (abortController.signal.aborted) return;
       setSearchResults(data.docs || []);
     } catch (err) {
+      if (abortController.signal.aborted) return;
       if (err instanceof Error && err.name === "AbortError") {
         return;
       }
       setError(err instanceof Error ? err.message : "Произошла ошибка");
       setSearchResults([]);
     } finally {
-      setIsLoading(false);
+      if (!abortController.signal.aborted && abortControllerRef.current === abortController) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -102,7 +106,8 @@ function AddFilmModal({
     debounceTimerRef.current = setTimeout(() => {
       if (filmName.trim().length >= 2) {
         searchFilm(filmName);
-      } else if (filmName.trim().length === 0) {
+      } else {
+        setIsLoading(false);
         setSearchResults([]);
         setError(null);
       }
@@ -112,6 +117,7 @@ function AddFilmModal({
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
+      abortControllerRef.current?.abort();
     };
   }, [filmName]);
 
@@ -122,9 +128,6 @@ function AddFilmModal({
     window.addEventListener("keydown", onKeyDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
     };
   }, [changeOpen]);
 
